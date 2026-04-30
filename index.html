@@ -281,6 +281,40 @@ body { background: var(--bg); color: var(--text); font-family: var(--font); min-
 /* ─── BOTTOM BAR ──────────────────────────────────── */
 .bbar-wrap { position: fixed; bottom: 0; left: 0; right: 0; z-index: 200; display: flex; justify-content: center; }
 .bbar { width: 100%; max-width: 600px; background: var(--surf); border-top: 1px solid var(--border); padding: .75rem 1rem; display: flex; gap: .5rem; }
+
+/* ─── ADD GUEST MODAL ─────────────────────────────── */
+.modal-backdrop {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,.75);
+  z-index: 300; align-items: flex-end; justify-content: center;
+}
+.modal-backdrop.open { display: flex; }
+.modal {
+  background: var(--surf); border: 1px solid var(--border); border-radius: 8px 8px 0 0;
+  padding: 1.25rem 1.25rem 2rem; width: 100%; max-width: 600px;
+  animation: slideup .2s ease;
+}
+@keyframes slideup { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.modal-hd {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.1rem;
+}
+.modal-hd h2 { font-size: 1rem; font-weight: 700; color: var(--gold); }
+.modal-close {
+  background: none; border: none; color: var(--muted); font-size: 1.4rem;
+  cursor: pointer; line-height: 1; padding: .1rem .3rem; touch-action: manipulation;
+}
+.modal-close:active { color: var(--text); }
+.modal-field { margin-bottom: .875rem; }
+.modal-field label { display: block; font-size: .6rem; letter-spacing: .15em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-bottom: .35rem; }
+.modal-field input { width: 100%; background: var(--surf2); border: 1px solid var(--border); color: var(--text); font-family: var(--font); font-size: 1rem; padding: .75rem .875rem; outline: none; border-radius: 2px; transition: border-color .2s; }
+.modal-field input:focus { border-color: var(--gold); }
+.modal-dna {
+  display: flex; align-items: center; gap: .6rem; padding: .6rem .875rem;
+  background: var(--surf2); border: 1px solid var(--border); border-radius: 2px;
+  cursor: pointer; margin-bottom: 1rem; touch-action: manipulation;
+}
+.modal-dna input[type=checkbox] { width: 18px; height: 18px; accent-color: var(--red); cursor: pointer; flex-shrink: 0; }
+.modal-dna span { font-size: .8rem; color: var(--muted); font-weight: 600; letter-spacing: .03em; }
+.modal-dna.checked span { color: #f87171; }
 </style>
 </head>
 <body>
@@ -400,9 +434,33 @@ body { background: var(--bg); color: var(--text); font-family: var(--font); min-
   <div class="bbar-wrap">
     <div class="bbar">
       <button class="btn btn-ghost btn-sm" onclick="backToEvents()" style="flex:0 0 auto">← Events</button>
-      <button class="btn btn-ghost btn-sm" onclick="reloadSetup()"  style="flex:0 0 auto">Reload List</button>
+      <button class="btn btn-ghost btn-sm" onclick="reloadSetup()"  style="flex:0 0 auto">Reload</button>
+      <button class="btn btn-ghost btn-sm" onclick="openAddGuest()" style="flex:0 0 auto">+ Guest</button>
       <button class="btn btn-gold  btn-sm" onclick="exportCSV()"    style="flex:1">Export CSV</button>
     </div>
+  </div>
+</div>
+
+<!-- ═══════════════ ADD GUEST MODAL ═══════════════ -->
+<div class="modal-backdrop" id="add-modal" onclick="closeAddGuest(event)">
+  <div class="modal">
+    <div class="modal-hd">
+      <h2>Add Guest</h2>
+      <button class="modal-close" onclick="closeAddGuest()">×</button>
+    </div>
+    <div class="modal-field">
+      <label for="ag-name">Name</label>
+      <input id="ag-name" type="text" placeholder="Full Name" autocomplete="off" autocorrect="off">
+    </div>
+    <div class="modal-field">
+      <label for="ag-note">Note (optional)</label>
+      <input id="ag-note" type="text" placeholder="VIP, check ID…" autocomplete="off">
+    </div>
+    <label class="modal-dna" id="ag-dna-label">
+      <input type="checkbox" id="ag-dna" onchange="document.getElementById('ag-dna-label').classList.toggle('checked',this.checked)">
+      <span>Flag as Do Not Admit</span>
+    </label>
+    <button class="btn btn-gold btn-full" onclick="submitAddGuest()">Add to List</button>
   </div>
 </div>
 
@@ -733,6 +791,40 @@ async function addNOL() {
   if (cap>0 && headcount()>=cap)
     if (!confirm(`⛔ AT CAPACITY (${cap})\n\nAdd walk-in anyway?`)) return;
   await eventRef(currentEventId).update({ nolCount: firebase.firestore.FieldValue.increment(1) });
+}
+
+// ── Add guest modal ───────────────────────────────
+function openAddGuest() {
+  document.getElementById('ag-name').value = '';
+  document.getElementById('ag-note').value = '';
+  document.getElementById('ag-dna').checked = false;
+  document.getElementById('ag-dna-label').classList.remove('checked');
+  document.getElementById('add-modal').classList.add('open');
+  setTimeout(() => document.getElementById('ag-name').focus(), 100);
+}
+
+function closeAddGuest(e) {
+  if (e && e.target !== document.getElementById('add-modal')) return;
+  document.getElementById('add-modal').classList.remove('open');
+}
+
+async function submitAddGuest() {
+  const name = document.getElementById('ag-name').value.trim();
+  if (!name) { document.getElementById('ag-name').focus(); return; }
+  const note = document.getElementById('ag-note').value.trim();
+  const dna  = document.getElementById('ag-dna').checked;
+
+  const maxOrder = guests.length ? Math.max(...guests.map(g => g.order ?? 0)) : -1;
+
+  try {
+    await guestsRef(currentEventId).doc().set({
+      order: maxOrder + 1, name, note, dna, status: 'pending', plus1: false, ts: null
+    });
+    await eventRef(currentEventId).update({ guestCount: firebase.firestore.FieldValue.increment(1) });
+    document.getElementById('add-modal').classList.remove('open');
+  } catch (ex) {
+    alert('Failed to add guest.'); console.error(ex);
+  }
 }
 
 async function toggleDNA(fid) {
