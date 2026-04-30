@@ -271,8 +271,12 @@ body { background: var(--bg); color: var(--text); font-family: var(--font); min-
 .gc.open .gc-notes { display: block; }
 .gc-notes input { width: 100%; background: var(--surf2); border: 1px solid var(--border); color: var(--text); font-family: var(--font); font-size: .85rem; padding: .5rem .7rem; border-radius: 2px; outline: none; transition: border-color .2s; }
 .gc-notes input:focus { border-color: var(--gold); }
+.notes-actions { display: flex; gap: .75rem; margin-top: .4rem; }
 .rm-btn { background: none; border: none; color: var(--muted); font-family: var(--font); font-size: .65rem; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; padding: .4rem 0 0; display: block; transition: color .15s; }
 .rm-btn:hover, .rm-btn:active { color: var(--red); }
+.dna-btn { background: none; border: none; font-family: var(--font); font-size: .65rem; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; padding: .4rem 0 0; display: block; transition: color .15s; color: var(--muted); }
+.dna-btn.flagged { color: #f87171; }
+.dna-btn:active { color: #f87171; }
 
 /* ─── BOTTOM BAR ──────────────────────────────────── */
 .bbar-wrap { position: fixed; bottom: 0; left: 0; right: 0; z-index: 200; display: flex; justify-content: center; }
@@ -731,6 +735,11 @@ async function addNOL() {
   await eventRef(currentEventId).update({ nolCount: firebase.firestore.FieldValue.increment(1) });
 }
 
+async function toggleDNA(fid) {
+  const g = guests.find(g => g.fid === fid); if (!g) return;
+  await guestsRef(currentEventId).doc(fid).update({ dna: !g.dna });
+}
+
 async function removeGuest(fid) {
   if (!confirm('Remove this guest from the list?')) return;
   await guestsRef(currentEventId).doc(fid).delete();
@@ -822,7 +831,12 @@ function render() {
            oninput="onNoteInput('${esc(g.fid)}',this.value)"
            onblur="onNoteBlur('${esc(g.fid)}',this.value)"
            autocomplete="off">
-    <button class="rm-btn" onclick="removeGuest('${esc(g.fid)}')">Remove from list</button>
+    <div class="notes-actions">
+      <button class="dna-btn${g.dna?' flagged':''}" onclick="toggleDNA('${esc(g.fid)}')">
+        ${g.dna ? '✕ Remove DNA Flag' : '⚑ Flag Do Not Admit'}
+      </button>
+      <button class="rm-btn" onclick="removeGuest('${esc(g.fid)}')">Remove from list</button>
+    </div>
   </div>
 </div>`;
   }).join('');
