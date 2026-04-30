@@ -27,13 +27,7 @@
   --font:     'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
-body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--font);
-  min-height: 100vh;
-  -webkit-font-smoothing: antialiased;
-}
+body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; -webkit-font-smoothing: antialiased; }
 
 .screen { display: none; min-height: 100vh; }
 .screen.active { display: flex; flex-direction: column; }
@@ -45,532 +39,234 @@ body {
   padding: 2rem;
   background: radial-gradient(ellipse at center, #111 0%, #080808 70%);
 }
-
-.pw-eyebrow {
-  font-size: 0.65rem;
-  letter-spacing: 0.5em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 2.5rem;
-  text-align: center;
-}
-
-.pw-title {
-  font-size: clamp(2.5rem, 10vw, 4rem);
-  font-weight: 900;
-  letter-spacing: 0.08em;
-  color: var(--gold);
-  text-transform: uppercase;
-  text-align: center;
-  line-height: 1;
-}
-
-.pw-rule {
-  width: 48px;
-  height: 1px;
-  background: var(--gold-dim);
-  margin: 1.25rem auto 1rem;
-}
-
-.pw-sub {
-  font-size: 0.7rem;
-  letter-spacing: 0.35em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 2.5rem;
-  text-align: center;
-}
-
-.login-form {
-  width: 100%;
-  max-width: 300px;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
+.pw-eyebrow { font-size: .65rem; letter-spacing: .5em; text-transform: uppercase; color: var(--muted); margin-bottom: 2.5rem; text-align: center; }
+.pw-title   { font-size: clamp(2.5rem,10vw,4rem); font-weight: 900; letter-spacing: .08em; color: var(--gold); text-transform: uppercase; text-align: center; line-height: 1; }
+.pw-rule    { width: 48px; height: 1px; background: var(--gold-dim); margin: 1.25rem auto 1rem; }
+.pw-sub     { font-size: .7rem; letter-spacing: .35em; text-transform: uppercase; color: var(--muted); margin-bottom: 2.5rem; text-align: center; }
+.login-form { width: 100%; max-width: 300px; display: flex; flex-direction: column; gap: .75rem; }
 .login-input {
-  background: #0e0e0e;
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-family: var(--font);
-  font-size: 1rem;
-  padding: 0.9rem 1rem;
-  outline: none;
-  transition: border-color 0.2s;
-  border-radius: 2px;
-  width: 100%;
+  background: #0e0e0e; border: 1px solid var(--border); color: var(--text);
+  font-family: var(--font); font-size: 1rem; padding: .9rem 1rem;
+  outline: none; transition: border-color .2s; border-radius: 2px; width: 100%;
 }
 .login-input:focus { border-color: var(--gold); }
-.login-input.shake {
-  border-color: var(--red);
-  animation: shake 0.3s ease;
-}
-@keyframes shake {
-  0%,100% { transform: translateX(0); }
-  20%      { transform: translateX(-10px); }
-  60%      { transform: translateX(10px); }
-}
+.login-input.shake { border-color: var(--red); animation: shake .3s ease; }
+@keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-10px)} 60%{transform:translateX(10px)} }
+.login-error { color: var(--red); font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; text-align: center; min-height: .9rem; }
 
-.login-error {
-  color: var(--red);
-  font-size: 0.7rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  text-align: center;
-  min-height: 0.9rem;
-}
-
-/* ─── LOADING ────────────────────────────────────── */
-#loading {
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-}
-
-.spinner {
-  width: 28px;
-  height: 28px;
-  border: 2px solid var(--border);
-  border-top-color: var(--gold);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
+/* ─── LOADING ─────────────────────────────────────── */
+#loading { align-items: center; justify-content: center; gap: 1rem; }
+.spinner { width: 28px; height: 28px; border: 2px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: spin .8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
-
-.loading-txt {
-  font-size: 0.65rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
+.loading-txt { font-size: .65rem; letter-spacing: .3em; text-transform: uppercase; color: var(--muted); }
 
 /* ─── BUTTONS ─────────────────────────────────────── */
 .btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-family: var(--font);
-  font-weight: 700;
-  font-size: 0.8rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 0.875rem 1.5rem;
-  border: none;
-  cursor: pointer;
-  transition: opacity 0.15s, transform 0.1s;
-  border-radius: 2px;
-  min-height: 48px;
-  touch-action: manipulation;
-  white-space: nowrap;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--font); font-weight: 700; font-size: .8rem;
+  letter-spacing: .1em; text-transform: uppercase;
+  padding: .875rem 1.5rem; border: none; cursor: pointer;
+  transition: opacity .15s, transform .1s; border-radius: 2px;
+  min-height: 48px; touch-action: manipulation; white-space: nowrap;
 }
-.btn:active { opacity: 0.8; transform: scale(0.98); }
-.btn:disabled { opacity: 0.4; pointer-events: none; }
+.btn:active  { opacity: .8; transform: scale(.98); }
+.btn:disabled{ opacity: .4; pointer-events: none; }
+.btn-gold    { background: var(--gold); color: #000; }
+.btn-ghost   { background: transparent; border: 1px solid var(--border); color: var(--muted); }
+.btn-full    { width: 100%; }
+.btn-sm      { font-size: .7rem; padding: .6rem 1rem; min-height: 40px; }
 
-.btn-gold  { background: var(--gold); color: #000; }
-.btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--muted); }
-.btn-full  { width: 100%; }
-.btn-sm    { font-size: 0.7rem; padding: 0.6rem 1rem; min-height: 40px; }
-
-/* ─── SETUP ──────────────────────────────────────── */
-#setup {
-  padding: 1.75rem 1.25rem 4rem;
-  max-width: 560px;
+/* ─── EVENTS LIST ────────────────────────────────── */
+#events {
+  flex-direction: column;
+  padding: 0 0 6rem;
+  max-width: 600px;
   margin: 0 auto;
   width: 100%;
 }
 
-.setup-hd { margin-bottom: 2rem; }
-.setup-hd h1 { font-size: 1.4rem; font-weight: 700; color: var(--gold); }
-.setup-hd p  { color: var(--muted); font-size: 0.8rem; margin-top: 0.2rem; }
-
-.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 0.875rem; }
-
-.fld { margin-bottom: 1.1rem; }
-.fld label {
-  display: block;
-  font-size: 0.6rem;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--muted);
-  font-weight: 600;
-  margin-bottom: 0.4rem;
-}
-.fld input, .fld textarea {
-  width: 100%;
-  background: var(--surf);
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-family: var(--font);
-  font-size: 0.95rem;
-  padding: 0.8rem 0.9rem;
-  outline: none;
-  border-radius: 2px;
-  transition: border-color 0.2s;
-}
-.fld input:focus, .fld textarea:focus { border-color: var(--gold); }
-.fld textarea { resize: vertical; min-height: 220px; line-height: 1.65; font-size: 0.875rem; }
-.fld .hint { font-size: 0.7rem; color: var(--muted); margin-top: 0.35rem; line-height: 1.45; }
-.fld .hint strong { color: #aaa; }
-
-.setup-signout {
-  display: block;
-  background: none;
-  border: none;
-  color: var(--muted);
-  font-family: var(--font);
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  cursor: pointer;
-  padding: 0.5rem 0;
-  margin-top: 1.5rem;
-}
-.setup-signout:hover { color: var(--red); }
-
-/* ─── BOUNCER ─────────────────────────────────────── */
-#bouncer { flex-direction: column; }
-
-.b-top {
-  background: var(--surf);
-  border-bottom: 1px solid var(--border);
-  padding: 0.75rem 1rem;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-
-.b-hdr {
+.events-hd {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.6rem;
-  gap: 0.5rem;
+  padding: 1.5rem 1rem 1rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1rem;
 }
+.events-hd h1 { font-size: 1.4rem; font-weight: 900; color: var(--gold); letter-spacing: .06em; text-transform: uppercase; }
+.hd-signout   { background: none; border: none; color: var(--muted); font-family: var(--font); font-size: .65rem; letter-spacing: .08em; text-transform: uppercase; cursor: pointer; padding: .3rem .4rem; touch-action: manipulation; }
+.hd-signout:active { color: var(--red); }
 
-.ev-name {
-  font-size: 1rem;
-  font-weight: 700;
-  color: var(--gold);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  flex: 1;
-}
-.ev-date { font-size: 0.7rem; color: var(--muted); flex-shrink: 0; }
+.ev-cards { padding: 0 1rem; }
 
-.signout-btn {
-  background: none;
-  border: none;
-  color: var(--muted);
-  font-family: var(--font);
-  font-size: 0.6rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  cursor: pointer;
-  padding: 0.25rem 0.4rem;
-  border-radius: 2px;
-  flex-shrink: 0;
-  touch-action: manipulation;
-}
-.signout-btn:active { color: var(--red); }
-
-/* Stats */
-.stats {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 3px;
-  margin-bottom: 0.6rem;
-}
-.stat {
-  background: var(--surf2);
+.ev-card {
+  background: var(--surf);
   border: 1px solid var(--border);
-  border-radius: 2px;
-  padding: 0.3rem 0.2rem;
-  text-align: center;
+  border-radius: 4px;
+  margin-bottom: .5rem;
+  cursor: pointer;
+  transition: border-color .15s;
+  touch-action: manipulation;
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  gap: .75rem;
+  min-height: 72px;
 }
-.stat-n {
-  display: block;
-  font-size: 1.05rem;
-  font-weight: 700;
-  line-height: 1;
+.ev-card:active { border-color: var(--gold); }
+
+.ev-card-info { flex: 1; min-width: 0; }
+.ev-card-name {
+  font-size: 1.05rem; font-weight: 700; color: var(--text);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
-.stat-l {
-  display: block;
-  font-size: 0.5rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-top: 0.15rem;
+.ev-card-meta {
+  display: flex; gap: .5rem; margin-top: .25rem; flex-wrap: wrap; align-items: center;
 }
+.ev-card-meta span { font-size: .7rem; color: var(--muted); }
+.ev-card-meta span + span::before { content: '·'; margin: 0 .3rem; }
+
+.ev-card-arrow { color: var(--muted); font-size: 1.1rem; flex-shrink: 0; }
+
+.ev-del {
+  background: none; border: 1px solid var(--border); color: var(--muted);
+  font-size: 1rem; width: 34px; height: 34px; border-radius: 3px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; touch-action: manipulation; transition: all .15s;
+}
+.ev-del:active { border-color: var(--red); color: var(--red); }
+
+.ev-empty {
+  text-align: center; color: var(--muted); font-size: .9rem;
+  line-height: 1.8; padding: 4rem 1.5rem;
+}
+.ev-empty strong { display: block; font-size: 1rem; color: #444; margin-bottom: .5rem; }
+
+.ev-bbar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+  display: flex; justify-content: center;
+}
+.ev-bbar-inner {
+  width: 100%; max-width: 600px; background: var(--surf);
+  border-top: 1px solid var(--border); padding: .75rem 1rem;
+}
+
+/* ─── SETUP ───────────────────────────────────────── */
+#setup { padding: 1.75rem 1.25rem 5rem; max-width: 560px; margin: 0 auto; width: 100%; }
+.setup-hd { margin-bottom: 1.75rem; }
+.setup-hd h1 { font-size: 1.4rem; font-weight: 700; color: var(--gold); }
+.setup-hd p  { color: var(--muted); font-size: .8rem; margin-top: .2rem; }
+
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: .875rem; }
+.fld  { margin-bottom: 1.1rem; }
+.fld label {
+  display: block; font-size: .6rem; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--muted); font-weight: 600; margin-bottom: .4rem;
+}
+.fld input, .fld textarea {
+  width: 100%; background: var(--surf); border: 1px solid var(--border);
+  color: var(--text); font-family: var(--font); font-size: .95rem;
+  padding: .8rem .9rem; outline: none; border-radius: 2px; transition: border-color .2s;
+}
+.fld input:focus, .fld textarea:focus { border-color: var(--gold); }
+.fld textarea  { resize: vertical; min-height: 220px; line-height: 1.65; font-size: .875rem; }
+.fld .hint     { font-size: .7rem; color: var(--muted); margin-top: .35rem; line-height: 1.45; }
+.fld .hint strong { color: #aaa; }
+
+.setup-actions { display: flex; gap: .5rem; }
+
+/* ─── BOUNCER ─────────────────────────────────────── */
+#bouncer { flex-direction: column; }
+.b-top {
+  background: var(--surf); border-bottom: 1px solid var(--border);
+  padding: .75rem 1rem; position: sticky; top: 0; z-index: 100;
+}
+.b-hdr { display: flex; align-items: center; justify-content: space-between; margin-bottom: .6rem; gap: .5rem; }
+.ev-name { font-size: 1rem; font-weight: 700; color: var(--gold); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; }
+.ev-date { font-size: .7rem; color: var(--muted); flex-shrink: 0; }
+
+.stats { display: grid; grid-template-columns: repeat(5,1fr); gap: 3px; margin-bottom: .6rem; }
+.stat  { background: var(--surf2); border: 1px solid var(--border); border-radius: 2px; padding: .3rem .2rem; text-align: center; }
+.stat-n { display: block; font-size: 1.05rem; font-weight: 700; line-height: 1; }
+.stat-l { display: block; font-size: .5rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-top: .15rem; }
 .stat.s-in  .stat-n { color: var(--green); }
 .stat.s-den .stat-n { color: var(--red); }
 .stat.s-nol .stat-n { color: #a78bfa; }
 
-/* Capacity banner */
 .cap-warn {
-  background: #1e1000;
-  border: 1px solid var(--gold-dim);
-  color: var(--gold);
-  font-size: 0.7rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  text-align: center;
-  padding: 0.35rem 0.5rem;
-  border-radius: 2px;
-  margin-bottom: 0.6rem;
-  display: none;
-  font-weight: 700;
+  background: #1e1000; border: 1px solid var(--gold-dim); color: var(--gold);
+  font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; text-align: center;
+  padding: .35rem .5rem; border-radius: 2px; margin-bottom: .6rem; display: none; font-weight: 700;
 }
-.cap-warn.full {
-  background: #1e0000;
-  border-color: var(--red-bd);
-  color: var(--red);
-}
+.cap-warn.full { background: #1e0000; border-color: var(--red-bd); color: var(--red); }
 
-/* Search row */
-.srch-row { display: flex; gap: 0.4rem; align-items: stretch; }
-
+.srch-row { display: flex; gap: .4rem; align-items: stretch; }
 .srch-input {
-  flex: 1;
-  background: var(--surf2);
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-family: var(--font);
-  font-size: 1rem;
-  padding: 0.75rem 0.9rem;
-  outline: none;
-  border-radius: 2px;
-  min-height: 48px;
-  transition: border-color 0.2s;
+  flex: 1; background: var(--surf2); border: 1px solid var(--border); color: var(--text);
+  font-family: var(--font); font-size: 1rem; padding: .75rem .9rem;
+  outline: none; border-radius: 2px; min-height: 48px; transition: border-color .2s;
 }
 .srch-input:focus { border-color: var(--gold); }
-
 .nol-btn {
-  background: #12082a;
-  border: 1px solid #4c1d95;
-  color: #a78bfa;
-  font-family: var(--font);
-  font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 0.4rem 0.6rem;
-  cursor: pointer;
-  border-radius: 2px;
-  min-height: 48px;
-  touch-action: manipulation;
-  text-align: center;
-  line-height: 1.3;
-  transition: background 0.15s;
-  flex-shrink: 0;
+  background: #12082a; border: 1px solid #4c1d95; color: #a78bfa;
+  font-family: var(--font); font-size: .6rem; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; padding: .4rem .6rem; cursor: pointer; border-radius: 2px;
+  min-height: 48px; touch-action: manipulation; text-align: center; line-height: 1.3;
+  transition: background .15s; flex-shrink: 0;
 }
 .nol-btn:active { background: #1e0e40; }
 
-/* Filter tabs */
-.ftabs { display: flex; gap: 3px; margin-top: 0.5rem; }
-.ftab {
-  background: var(--surf2);
-  border: 1px solid var(--border);
-  color: var(--muted);
-  font-family: var(--font);
-  font-size: 0.6rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 0.3rem 0.55rem;
-  cursor: pointer;
-  border-radius: 2px;
-  transition: all 0.15s;
-  touch-action: manipulation;
-  flex: 1;
-  text-align: center;
+.ftabs { display: flex; gap: 3px; margin-top: .5rem; }
+.ftab  {
+  background: var(--surf2); border: 1px solid var(--border); color: var(--muted);
+  font-family: var(--font); font-size: .6rem; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; padding: .3rem .55rem; cursor: pointer; border-radius: 2px;
+  transition: all .15s; touch-action: manipulation; flex: 1; text-align: center;
 }
 .ftab.on { background: var(--gold); border-color: var(--gold); color: #000; }
 
 /* ─── GUEST LIST ──────────────────────────────────── */
-.glist {
-  padding: 0.75rem 1rem 7rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.45rem;
-  max-width: 600px;
-  width: 100%;
-  margin: 0 auto;
-}
+.glist { padding: .75rem 1rem 7rem; display: flex; flex-direction: column; gap: .45rem; max-width: 600px; width: 100%; margin: 0 auto; }
+.empty { text-align: center; color: var(--muted); font-size: .85rem; letter-spacing: .05em; padding: 3.5rem 1rem; }
 
-.empty {
-  text-align: center;
-  color: var(--muted);
-  font-size: 0.85rem;
-  letter-spacing: 0.05em;
-  padding: 3.5rem 1rem;
-}
-
-/* Guest card */
-.gc {
-  background: var(--surf);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  overflow: hidden;
-  transition: border-color 0.2s, background 0.2s;
-}
+.gc { background: var(--surf); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; transition: border-color .2s, background .2s; }
 .gc.admitted { border-color: var(--green-bd); background: var(--green-bg); }
-.gc.denied   { border-color: var(--red-bd);   background: var(--red-bg);   }
+.gc.denied   { border-color: var(--red-bd);   background: var(--red-bg); }
 .gc.dna      { border-left: 3px solid var(--red-bd); }
 
-.gc-main {
-  display: flex;
-  align-items: center;
-  padding: 0.8rem 0.875rem;
-  gap: 0.6rem;
-  min-height: 66px;
-}
-
-.gc-info {
-  flex: 1;
-  min-width: 0;
-  cursor: pointer;
-  user-select: none;
-}
-
-.gc-name {
-  font-size: 1rem;
-  font-weight: 600;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  line-height: 1.3;
-  transition: color 0.2s;
-}
+.gc-main { display: flex; align-items: center; padding: .8rem .875rem; gap: .6rem; min-height: 66px; }
+.gc-info { flex: 1; min-width: 0; cursor: pointer; user-select: none; }
+.gc-name { font-size: 1rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.3; transition: color .2s; }
 .gc.admitted .gc-name { color: var(--green); }
 .gc.denied   .gc-name { color: var(--red); }
+.gc-meta { display: flex; align-items: center; gap: .3rem; margin-top: .25rem; flex-wrap: wrap; min-height: 1.1rem; }
 
-.gc-meta {
-  display: flex;
-  align-items: center;
-  gap: 0.3rem;
-  margin-top: 0.25rem;
-  flex-wrap: wrap;
-  min-height: 1.1rem;
-}
-
-.badge {
-  display: inline-block;
-  font-size: 0.55rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 0.12rem 0.35rem;
-  border-radius: 2px;
-  line-height: 1.4;
-}
+.badge { display: inline-block; font-size: .55rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; padding: .12rem .35rem; border-radius: 2px; line-height: 1.4; }
 .b-dna  { background: #2a0606; color: #f87171; border: 1px solid var(--red-bd); }
 .b-p1   { background: #052010; color: var(--green); border: 1px solid var(--green-bd); }
-.b-note { background: #1a1000; color: var(--gold); border: 1px solid var(--gold-dim);
-          max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-          display: inline-block; vertical-align: middle; }
-.ts     { font-size: 0.6rem; color: var(--muted); }
+.b-note { background: #1a1000; color: var(--gold); border: 1px solid var(--gold-dim); max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; vertical-align: middle; }
+.ts     { font-size: .6rem; color: var(--muted); }
 
-/* Action buttons */
-.gc-acts { display: flex; gap: 0.35rem; flex-shrink: 0; }
-
-.abt {
-  width: 44px;
-  height: 44px;
-  border-radius: 3px;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  touch-action: manipulation;
-  transition: transform 0.1s, opacity 0.1s;
-  font-family: var(--font);
-  font-weight: 700;
-}
-.abt:active { transform: scale(0.9); opacity: 0.8; }
-
-.abt-p1 {
-  background: var(--surf2);
-  color: var(--muted);
-  border: 1px solid var(--border);
-  font-size: 0.7rem;
-}
+.gc-acts { display: flex; gap: .35rem; flex-shrink: 0; }
+.abt { width: 44px; height: 44px; border-radius: 3px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; touch-action: manipulation; transition: transform .1s, opacity .1s; font-family: var(--font); font-weight: 700; }
+.abt:active { transform: scale(.9); opacity: .8; }
+.abt-p1 { background: var(--surf2); color: var(--muted); border: 1px solid var(--border); font-size: .7rem; }
 .abt-p1.on { background: #052010; color: var(--green); border-color: var(--green-bd); }
-
-.abt-in {
-  background: #0a2016;
-  color: var(--green);
-  border: 1px solid var(--green-bd);
-  font-size: 1.15rem;
-}
-.abt-in.on { background: var(--green-bd); }
-
-.abt-den {
-  background: #200a0a;
-  color: var(--red);
-  border: 1px solid var(--red-bd);
-  font-size: 1.15rem;
-}
+.abt-in  { background: #0a2016; color: var(--green); border: 1px solid var(--green-bd); font-size: 1.15rem; }
+.abt-in.on  { background: var(--green-bd); }
+.abt-den { background: #200a0a; color: var(--red); border: 1px solid var(--red-bd); font-size: 1.15rem; }
 .abt-den.on { background: var(--red-bd); }
 
-/* Notes panel */
-.gc-notes {
-  border-top: 1px solid var(--border);
-  padding: 0.5rem 0.875rem 0.65rem;
-  display: none;
-}
+.gc-notes { border-top: 1px solid var(--border); padding: .5rem .875rem .65rem; display: none; }
 .gc.open .gc-notes { display: block; }
-
-.gc-notes input {
-  width: 100%;
-  background: var(--surf2);
-  border: 1px solid var(--border);
-  color: var(--text);
-  font-family: var(--font);
-  font-size: 0.85rem;
-  padding: 0.5rem 0.7rem;
-  border-radius: 2px;
-  outline: none;
-  transition: border-color 0.2s;
-}
+.gc-notes input { width: 100%; background: var(--surf2); border: 1px solid var(--border); color: var(--text); font-family: var(--font); font-size: .85rem; padding: .5rem .7rem; border-radius: 2px; outline: none; transition: border-color .2s; }
 .gc-notes input:focus { border-color: var(--gold); }
-
-.rm-btn {
-  background: none;
-  border: none;
-  color: var(--muted);
-  font-family: var(--font);
-  font-size: 0.65rem;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  cursor: pointer;
-  padding: 0.4rem 0 0;
-  display: block;
-  transition: color 0.15s;
-}
+.rm-btn { background: none; border: none; color: var(--muted); font-family: var(--font); font-size: .65rem; letter-spacing: .06em; text-transform: uppercase; cursor: pointer; padding: .4rem 0 0; display: block; transition: color .15s; }
 .rm-btn:hover, .rm-btn:active { color: var(--red); }
 
 /* ─── BOTTOM BAR ──────────────────────────────────── */
-.bbar-wrap {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 200;
-  display: flex;
-  justify-content: center;
-}
-.bbar {
-  width: 100%;
-  max-width: 600px;
-  background: var(--surf);
-  border-top: 1px solid var(--border);
-  padding: 0.75rem 1rem;
-  display: flex;
-  gap: 0.5rem;
-}
+.bbar-wrap { position: fixed; bottom: 0; left: 0; right: 0; z-index: 200; display: flex; justify-content: center; }
+.bbar { width: 100%; max-width: 600px; background: var(--surf); border-top: 1px solid var(--border); padding: .75rem 1rem; display: flex; gap: .5rem; }
 </style>
 </head>
 <body>
@@ -582,7 +278,7 @@ body {
   <div class="pw-rule"></div>
   <p class="pw-sub">Authorized Personnel</p>
   <form class="login-form" onsubmit="doLogin(event)">
-    <input id="l-email" type="email"    class="login-input" placeholder="Email"    autocomplete="email"     autocorrect="off" autocapitalize="off">
+    <input id="l-email" type="email"    class="login-input" placeholder="Email"    autocomplete="email" autocorrect="off" autocapitalize="off">
     <input id="l-pw"    type="password" class="login-input" placeholder="Password" autocomplete="current-password">
     <p id="l-err" class="login-error"></p>
     <button id="l-btn" type="submit" class="btn btn-gold btn-full">Sign In</button>
@@ -595,12 +291,26 @@ body {
   <p class="loading-txt">Connecting…</p>
 </div>
 
+<!-- ═══════════════ EVENTS LIST ═══════════════ -->
+<div id="events" class="screen">
+  <div class="events-hd">
+    <h1>Door List</h1>
+    <button class="hd-signout" onclick="doSignOut()">Sign Out</button>
+  </div>
+  <div class="ev-cards" id="ev-cards"></div>
+  <div class="ev-bbar">
+    <div class="ev-bbar-inner">
+      <button class="btn btn-gold btn-full" onclick="newEvent()">+ New Event</button>
+    </div>
+  </div>
+</div>
+
 <!-- ═══════════════ SETUP ═══════════════ -->
 <div id="setup" class="screen">
-  <div style="max-width:560px;margin:0 auto;width:100%;padding:1.75rem 1.25rem 4rem;">
+  <div style="max-width:560px;margin:0 auto;width:100%;padding:1.75rem 1.25rem 5rem;">
     <div class="setup-hd">
-      <h1>Event Setup</h1>
-      <p>Configure your event and paste the guest list</p>
+      <h1 id="setup-title">New Event</h1>
+      <p  id="setup-sub">Fill in the details and paste your guest list</p>
     </div>
 
     <div class="row2">
@@ -625,44 +335,29 @@ body {
       <p class="hint">One name per line. Append <strong>X</strong> to flag DO NOT ADMIT. Add <strong>| note</strong> for inline notes.</p>
     </div>
 
-    <button id="load-btn" class="btn btn-gold btn-full" onclick="loadList()">Load Guest List →</button>
-    <button class="setup-signout" onclick="doSignOut()">Sign Out</button>
+    <div class="setup-actions">
+      <button class="btn btn-ghost btn-sm" onclick="cancelSetup()">Cancel</button>
+      <button id="load-btn" class="btn btn-gold" style="flex:1" onclick="loadList()">Load Guest List →</button>
+    </div>
   </div>
 </div>
 
 <!-- ═══════════════ BOUNCER ═══════════════ -->
 <div id="bouncer" class="screen">
-
   <div class="b-top">
     <div class="b-hdr">
       <span class="ev-name" id="d-name">Event</span>
       <span class="ev-date" id="d-date"></span>
-      <button class="signout-btn" onclick="doSignOut()">Sign Out</button>
     </div>
 
     <div id="cap-warn" class="cap-warn"></div>
 
     <div class="stats">
-      <div class="stat">
-        <span class="stat-n" id="s-tot">0</span>
-        <span class="stat-l">Total</span>
-      </div>
-      <div class="stat s-in">
-        <span class="stat-n" id="s-in">0</span>
-        <span class="stat-l">In</span>
-      </div>
-      <div class="stat s-den">
-        <span class="stat-n" id="s-den">0</span>
-        <span class="stat-l">Denied</span>
-      </div>
-      <div class="stat">
-        <span class="stat-n" id="s-pend">0</span>
-        <span class="stat-l">Pending</span>
-      </div>
-      <div class="stat s-nol">
-        <span class="stat-n" id="s-nol">0</span>
-        <span class="stat-l">No-List</span>
-      </div>
+      <div class="stat">        <span class="stat-n" id="s-tot">0</span>  <span class="stat-l">Total</span>   </div>
+      <div class="stat s-in">  <span class="stat-n" id="s-in">0</span>   <span class="stat-l">In</span>      </div>
+      <div class="stat s-den"> <span class="stat-n" id="s-den">0</span>  <span class="stat-l">Denied</span>  </div>
+      <div class="stat">        <span class="stat-n" id="s-pend">0</span> <span class="stat-l">Pending</span> </div>
+      <div class="stat s-nol"> <span class="stat-n" id="s-nol">0</span>  <span class="stat-l">No-List</span> </div>
     </div>
 
     <div class="srch-row">
@@ -684,8 +379,9 @@ body {
 
   <div class="bbar-wrap">
     <div class="bbar">
-      <button class="btn btn-ghost btn-sm" onclick="goSetup()" style="flex:0 0 auto">← Edit</button>
-      <button class="btn btn-gold  btn-sm" onclick="exportCSV()" style="flex:1">Export CSV</button>
+      <button class="btn btn-ghost btn-sm" onclick="backToEvents()" style="flex:0 0 auto">← Events</button>
+      <button class="btn btn-ghost btn-sm" onclick="reloadSetup()"  style="flex:0 0 auto">Reload List</button>
+      <button class="btn btn-gold  btn-sm" onclick="exportCSV()"    style="flex:1">Export CSV</button>
     </div>
   </div>
 </div>
@@ -712,22 +408,29 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db   = firebase.firestore();
 
-const EVENT_DOC  = db.collection('events').doc('current');
-const GUESTS_COL = EVENT_DOC.collection('guests');
+// Firestore helpers
+const eventsCol    = ()     => db.collection('events');
+const eventRef     = id     => db.collection('events').doc(id);
+const guestsRef    = id     => eventRef(id).collection('guests');
 
-let guests    = [];
-let eventData = {};
-let filter    = 'all';
-let unsubE    = null;
-let unsubG    = null;
-const noteDraft = {};
+// ── State ─────────────────────────────────────────
+let allEvents      = [];
+let guests         = [];
+let eventData      = {};
+let currentEventId = null;
+let filter         = 'all';
+let unsubAll       = null;   // events list listener
+let unsubE         = null;   // current event listener
+let unsubG         = null;   // current event guests listener
+const noteDraft    = {};
 
 // ── Auth ──────────────────────────────────────────
 auth.onAuthStateChanged(user => {
   if (user) {
-    startSync();
+    show('loading');
+    startEventsListener();
   } else {
-    stopSync();
+    stopAll();
     show('login');
   }
 });
@@ -738,17 +441,12 @@ async function doLogin(e) {
   const pw    = document.getElementById('l-pw').value;
   const err   = document.getElementById('l-err');
   const btn   = document.getElementById('l-btn');
-
-  btn.disabled    = true;
-  btn.textContent = 'Signing in…';
-  err.textContent = '';
-
+  btn.disabled = true; btn.textContent = 'Signing in…'; err.textContent = '';
   try {
     await auth.signInWithEmailAndPassword(email, pw);
   } catch {
     err.textContent = 'Invalid email or password.';
-    btn.disabled    = false;
-    btn.textContent = 'Sign In';
+    btn.disabled = false; btn.textContent = 'Sign In';
     document.getElementById('l-pw').value = '';
     const inp = document.getElementById('l-pw');
     inp.classList.add('shake');
@@ -760,44 +458,118 @@ async function doSignOut() {
   await auth.signOut();
 }
 
-// ── Sync ──────────────────────────────────────────
-function startSync() {
-  show('loading');
+// ── Events list listener ──────────────────────────
+function startEventsListener() {
+  let first = true;
+  unsubAll = eventsCol().orderBy('createdAt','desc').onSnapshot(snap => {
+    allEvents = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderEventCards();
+    if (first) { first = false; show('events'); }
+  }, () => { show('events'); });
+}
 
-  // Determine initial screen
-  EVENT_DOC.get().then(snap => {
-    show(snap.exists ? 'bouncer' : 'setup');
-    if (snap.exists) {
-      document.getElementById('ev-date').value =
-        new Date().toISOString().split('T')[0];
-    }
-  }).catch(() => show('setup'));
+function stopAll() {
+  if (unsubAll) { unsubAll(); unsubAll = null; }
+  stopEventListeners();
+  allEvents = []; guests = []; eventData = {}; currentEventId = null;
+}
 
-  // Live event metadata
-  unsubE = EVENT_DOC.onSnapshot(snap => {
-    if (!snap.exists) return;
+// ── Events screen ─────────────────────────────────
+function renderEventCards() {
+  const el = document.getElementById('ev-cards');
+  if (!el) return;
+
+  if (!allEvents.length) {
+    el.innerHTML = `<div class="ev-empty"><strong>No events yet</strong>Tap New Event to get started.</div>`;
+    return;
+  }
+
+  el.innerHTML = allEvents.map(ev => {
+    const meta = [
+      ev.dateDisplay || '',
+      ev.guestCount  ? `${ev.guestCount} guests` : '',
+      ev.maxCapacity ? `cap ${ev.maxCapacity}`   : ''
+    ].filter(Boolean);
+
+    return `
+<div class="ev-card" onclick="openEvent('${esc(ev.id)}')">
+  <div class="ev-card-info">
+    <div class="ev-card-name">${esc(ev.name || 'Untitled Event')}</div>
+    <div class="ev-card-meta">${meta.map(m => `<span>${esc(m)}</span>`).join('')}</div>
+  </div>
+  <span class="ev-card-arrow">›</span>
+  <button class="ev-del" onclick="event.stopPropagation();deleteEvent('${esc(ev.id)}','${esc(ev.name||'this event')}')">×</button>
+</div>`;
+  }).join('');
+}
+
+// ── Open / close event ────────────────────────────
+function openEvent(id) {
+  currentEventId = id;
+  stopEventListeners();
+
+  unsubE = eventRef(id).onSnapshot(snap => {
+    if (!snap.exists) { backToEvents(); return; }
     eventData = snap.data();
     document.getElementById('d-name').textContent = eventData.name        || 'Event';
     document.getElementById('d-date').textContent = eventData.dateDisplay || '';
     updateStats();
   });
 
-  // Live guest list
-  unsubG = GUESTS_COL.orderBy('order').onSnapshot(snap => {
+  unsubG = guestsRef(id).orderBy('order').onSnapshot(snap => {
     guests = snap.docs.map(d => ({ fid: d.id, ...d.data() }));
     render();
     updateStats();
   });
+
+  // Reset filter + search
+  filter = 'all';
+  document.querySelectorAll('.ftab').forEach((t,i) => t.classList.toggle('on', i === 0));
+  const srch = document.getElementById('srch');
+  if (srch) srch.value = '';
+
+  show('bouncer');
 }
 
-function stopSync() {
+function stopEventListeners() {
   if (unsubE) { unsubE(); unsubE = null; }
   if (unsubG) { unsubG(); unsubG = null; }
-  guests    = [];
-  eventData = {};
 }
 
-// ── Load list ─────────────────────────────────────
+function backToEvents() {
+  stopEventListeners();
+  currentEventId = null;
+  guests = []; eventData = {};
+  show('events');
+}
+
+// ── Setup screen ──────────────────────────────────
+function newEvent() {
+  currentEventId = null;
+  document.getElementById('setup-title').textContent = 'New Event';
+  document.getElementById('setup-sub').textContent   = 'Fill in the details and paste your guest list';
+  document.getElementById('ev-name').value = '';
+  document.getElementById('ev-date').value = new Date().toISOString().split('T')[0];
+  document.getElementById('ev-cap').value  = '';
+  document.getElementById('ev-list').value = '';
+  show('setup');
+}
+
+function reloadSetup() {
+  document.getElementById('setup-title').textContent = `Reload — ${eventData.name || 'Event'}`;
+  document.getElementById('setup-sub').textContent   = 'Paste a new list to replace the current one';
+  document.getElementById('ev-name').value = eventData.name        || '';
+  document.getElementById('ev-date').value = eventData.date        || '';
+  document.getElementById('ev-cap').value  = eventData.maxCapacity || '';
+  document.getElementById('ev-list').value = '';
+  show('setup');
+}
+
+function cancelSetup() {
+  show(currentEventId ? 'bouncer' : 'events');
+}
+
+// ── Load / parse list ─────────────────────────────
 async function loadList() {
   const raw = document.getElementById('ev-list').value.trim();
   if (!raw) { alert('Paste a guest list first.'); return; }
@@ -805,53 +577,50 @@ async function loadList() {
   const name   = document.getElementById('ev-name').value.trim() || 'Event';
   const dateV  = document.getElementById('ev-date').value;
   const capV   = parseInt(document.getElementById('ev-cap').value) || 0;
-
-  let dateDisplay = '';
-  if (dateV) {
-    dateDisplay = new Date(dateV + 'T12:00:00')
-      .toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
-  }
+  let   dateDisplay = '';
+  if (dateV) dateDisplay = new Date(dateV + 'T12:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
 
   const newGuests = parseList(raw);
   const btn = document.getElementById('load-btn');
-  btn.disabled    = true;
-  btn.textContent = 'Loading…';
+  btn.disabled = true; btn.textContent = 'Loading…';
 
   try {
-    // Delete existing guests in chunks of 499
-    const existing = await GUESTS_COL.get();
+    // Use existing id or generate a new one
+    const targetId  = currentEventId || db.collection('events').doc().id;
+    const gRef      = guestsRef(targetId);
+
+    // Delete old guests
+    const existing = await gRef.get();
     if (!existing.empty) {
-      for (const chunk of chunks([...existing.docs], 499)) {
-        const b = db.batch();
-        chunk.forEach(d => b.delete(d.ref));
-        await b.commit();
+      for (const ch of chunk(existing.docs, 499)) {
+        const b = db.batch(); ch.forEach(d => b.delete(d.ref)); await b.commit();
       }
     }
 
-    // Write new guests in chunks of 499
-    for (const chunk of chunks(newGuests, 499)) {
-      const b = db.batch();
-      chunk.forEach(g => b.set(GUESTS_COL.doc(), g));
-      await b.commit();
+    // Write new guests
+    for (const ch of chunk(newGuests, 499)) {
+      const b = db.batch(); ch.forEach(g => b.set(gRef.doc(), g)); await b.commit();
     }
 
-    // Update event document
-    await EVENT_DOC.set({ name, date: dateV, dateDisplay, maxCapacity: capV, nolCount: 0 });
+    // Write / update event doc
+    const isNew = !currentEventId;
+    await eventRef(targetId).set({
+      name, date: dateV, dateDisplay, maxCapacity: capV,
+      nolCount: 0, guestCount: newGuests.length,
+      createdAt: isNew
+        ? firebase.firestore.FieldValue.serverTimestamp()
+        : (eventData.createdAt || firebase.firestore.FieldValue.serverTimestamp())
+    });
 
-    show('bouncer');
+    // Open the event in bouncer view
+    openEvent(targetId);
+
   } catch (ex) {
     alert('Failed to load list. Check your connection and try again.');
     console.error(ex);
   } finally {
-    btn.disabled    = false;
-    btn.textContent = 'Load Guest List →';
+    btn.disabled = false; btn.textContent = 'Load Guest List →';
   }
-}
-
-function chunks(arr, size) {
-  const out = [];
-  for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
-  return out;
 }
 
 function parseList(text) {
@@ -860,15 +629,31 @@ function parseList(text) {
     const note  = rest.join('|').trim();
     const words = namePart.trim().split(/\s+/);
     const dna   = words[words.length - 1].toUpperCase() === 'X';
-    const name  = dna ? words.slice(0, -1).join(' ') : words.join(' ');
-    return { order: i, name: name || `Guest ${i + 1}`, note, dna, status: 'pending', plus1: false, ts: null };
+    const name  = dna ? words.slice(0,-1).join(' ') : words.join(' ');
+    return { order: i, name: name || `Guest ${i+1}`, note, dna, status:'pending', plus1:false, ts:null };
   });
 }
 
-function goSetup() {
-  if (guests.length && !confirm('Return to setup? Live session data will be kept in Firestore.')) return;
-  document.getElementById('ev-date').value = new Date().toISOString().split('T')[0];
-  show('setup');
+function chunk(arr, size) {
+  const out = [];
+  for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
+  return out;
+}
+
+// ── Delete event ──────────────────────────────────
+async function deleteEvent(id, name) {
+  if (!confirm(`Delete "${name}" and all guest data?\n\nThis cannot be undone.`)) return;
+  try {
+    const gDocs = await guestsRef(id).get();
+    if (!gDocs.empty) {
+      for (const ch of chunk(gDocs.docs, 499)) {
+        const b = db.batch(); ch.forEach(d => b.delete(d.ref)); await b.commit();
+      }
+    }
+    await eventRef(id).delete();
+  } catch (ex) {
+    alert('Failed to delete event.'); console.error(ex);
+  }
 }
 
 // ── Stats ─────────────────────────────────────────
@@ -880,86 +665,66 @@ function headcount() {
 function updateStats() {
   const hc  = headcount();
   const cap = eventData.maxCapacity || 0;
-
   document.getElementById('s-tot').textContent  = guests.length;
   document.getElementById('s-in').textContent   = hc;
-  document.getElementById('s-den').textContent  = guests.filter(g => g.status === 'denied').length;
-  document.getElementById('s-pend').textContent = guests.filter(g => g.status === 'pending').length;
+  document.getElementById('s-den').textContent  = guests.filter(g => g.status==='denied').length;
+  document.getElementById('s-pend').textContent = guests.filter(g => g.status==='pending').length;
   document.getElementById('s-nol').textContent  = eventData.nolCount || 0;
 
   const warn = document.getElementById('cap-warn');
   if (cap > 0) {
     const left = cap - hc;
-    if (hc >= cap) {
-      warn.style.display = 'block';
-      warn.className     = 'cap-warn full';
-      warn.textContent   = `⛔ AT CAPACITY — ${hc} / ${cap}`;
-    } else if (left <= 10) {
-      warn.style.display = 'block';
-      warn.className     = 'cap-warn';
-      warn.textContent   = `⚠ NEAR CAPACITY — ${left} spot${left === 1 ? '' : 's'} left`;
-    } else {
-      warn.style.display = 'none';
-    }
-  } else {
-    warn.style.display = 'none';
-  }
+    if (hc >= cap)    { warn.style.display='block'; warn.className='cap-warn full'; warn.textContent=`⛔ AT CAPACITY — ${hc} / ${cap}`; }
+    else if (left<=10){ warn.style.display='block'; warn.className='cap-warn';      warn.textContent=`⚠ NEAR CAPACITY — ${left} spot${left===1?'':'s'} left`; }
+    else              { warn.style.display='none'; }
+  } else { warn.style.display='none'; }
 }
 
-// ── Guest actions (all write to Firestore) ────────
+// ── Guest actions ─────────────────────────────────
 async function admit(fid) {
-  const g = guests.find(g => g.fid === fid);
-  if (!g) return;
+  const g = guests.find(g => g.fid===fid); if (!g) return;
   const cap = eventData.maxCapacity || 0;
-  if (g.status !== 'admitted' && cap > 0 && headcount() >= cap) {
+  if (g.status!=='admitted' && cap>0 && headcount()>=cap)
     if (!confirm(`⛔ AT CAPACITY (${cap})\n\nAdmit anyway?`)) return;
-  }
-  await GUESTS_COL.doc(fid).update(
-    g.status === 'admitted'
-      ? { status: 'pending', ts: null, plus1: false }
-      : { status: 'admitted', ts: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) }
+  await guestsRef(currentEventId).doc(fid).update(
+    g.status==='admitted'
+      ? { status:'pending', ts:null, plus1:false }
+      : { status:'admitted', ts: new Date().toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'}) }
   );
 }
 
 async function deny(fid) {
-  const g = guests.find(g => g.fid === fid);
-  if (!g) return;
-  await GUESTS_COL.doc(fid).update(
-    g.status === 'denied'
-      ? { status: 'pending' }
-      : { status: 'denied', ts: null, plus1: false }
+  const g = guests.find(g => g.fid===fid); if (!g) return;
+  await guestsRef(currentEventId).doc(fid).update(
+    g.status==='denied' ? { status:'pending' } : { status:'denied', ts:null, plus1:false }
   );
 }
 
 async function toggleP1(fid) {
-  const g = guests.find(g => g.fid === fid);
-  if (!g || g.status !== 'admitted') return;
-  await GUESTS_COL.doc(fid).update({ plus1: !g.plus1 });
+  const g = guests.find(g => g.fid===fid);
+  if (!g || g.status!=='admitted') return;
+  await guestsRef(currentEventId).doc(fid).update({ plus1: !g.plus1 });
 }
 
 async function addNOL() {
   const cap = eventData.maxCapacity || 0;
-  if (cap > 0 && headcount() >= cap) {
+  if (cap>0 && headcount()>=cap)
     if (!confirm(`⛔ AT CAPACITY (${cap})\n\nAdd walk-in anyway?`)) return;
-  }
-  await EVENT_DOC.update({ nolCount: firebase.firestore.FieldValue.increment(1) });
+  await eventRef(currentEventId).update({ nolCount: firebase.firestore.FieldValue.increment(1) });
 }
 
 async function removeGuest(fid) {
   if (!confirm('Remove this guest from the list?')) return;
-  await GUESTS_COL.doc(fid).delete();
+  await guestsRef(currentEventId).doc(fid).delete();
 }
 
-// Notes: update local draft instantly, write to Firestore on blur
-function onNoteInput(fid, val) {
-  noteDraft[fid] = val;
-}
+function onNoteInput(fid, val) { noteDraft[fid] = val; }
 async function onNoteBlur(fid, val) {
   delete noteDraft[fid];
-  await GUESTS_COL.doc(fid).update({ note: val });
+  await guestsRef(currentEventId).doc(fid).update({ note: val });
 }
 
-// ── Filter / search ───────────────────────────────
+// ── Filter ────────────────────────────────────────
 function setFilter(f, btn) {
   filter = f;
   document.querySelectorAll('.ftab').forEach(t => t.classList.remove('on'));
@@ -967,74 +732,66 @@ function setFilter(f, btn) {
   render();
 }
 
-// ── Render ────────────────────────────────────────
+// ── Render guest list ─────────────────────────────
 function esc(s) {
-  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 function render() {
-  const q    = (document.getElementById('srch')?.value || '').toLowerCase().trim();
+  const q    = (document.getElementById('srch')?.value||'').toLowerCase().trim();
   const list = document.getElementById('glist');
   if (!list) return;
 
-  // Preserve open cards and focused input
   const openSet   = new Set([...document.querySelectorAll('.gc.open')].map(el => el.dataset.id));
   const focusedId = document.activeElement?.closest('.gc')?.dataset.id;
 
   const visible = guests.filter(g => {
-    const note  = noteDraft[g.fid] ?? g.note ?? '';
+    const note   = noteDraft[g.fid] ?? g.note ?? '';
     const matchQ = !q || g.name.toLowerCase().includes(q) || note.toLowerCase().includes(q);
-    const matchF =
-      filter === 'all'      ? true :
-      filter === 'pending'  ? g.status === 'pending'  :
-      filter === 'admitted' ? g.status === 'admitted' :
-      filter === 'denied'   ? g.status === 'denied'   :
-      filter === 'dna'      ? g.dna : true;
+    const matchF = filter==='all'      ? true
+                 : filter==='pending'  ? g.status==='pending'
+                 : filter==='admitted' ? g.status==='admitted'
+                 : filter==='denied'   ? g.status==='denied'
+                 : filter==='dna'      ? g.dna : true;
     return matchQ && matchF;
   });
 
-  if (!visible.length) {
-    list.innerHTML = `<div class="empty">No guests found</div>`;
-    return;
-  }
+  if (!visible.length) { list.innerHTML=`<div class="empty">No guests found</div>`; return; }
 
   list.innerHTML = visible.map(g => {
-    const isIn   = g.status === 'admitted';
-    const isDen  = g.status === 'denied';
+    const isIn   = g.status==='admitted';
+    const isDen  = g.status==='denied';
     const isOpen = openSet.has(g.fid);
     const note   = noteDraft[g.fid] ?? g.note ?? '';
 
-    const dnaBadge  = g.dna      ? `<span class="badge b-dna">Do Not Admit</span>` : '';
-    const p1Badge   = g.plus1 && isIn ? `<span class="badge b-p1">+1</span>` : '';
-    const noteBadge = note && !isOpen ? `<span class="badge b-note" title="${esc(note)}">${esc(note)}</span>` : '';
-    const tsSpan    = g.ts        ? `<span class="ts">${esc(g.ts)}</span>` : '';
-
     return `
-<div class="gc${isIn?' admitted':''}${isDen?' denied':''}${g.dna?' dna':''}${isOpen?' open':''}"
-     data-id="${esc(g.fid)}">
+<div class="gc${isIn?' admitted':''}${isDen?' denied':''}${g.dna?' dna':''}${isOpen?' open':''}" data-id="${esc(g.fid)}">
   <div class="gc-main">
     <div class="gc-info" onclick="toggleOpen('${esc(g.fid)}')">
       <div class="gc-name">${esc(g.name)}</div>
-      <div class="gc-meta">${dnaBadge}${p1Badge}${noteBadge}${tsSpan}</div>
+      <div class="gc-meta">
+        ${g.dna              ? `<span class="badge b-dna">Do Not Admit</span>` : ''}
+        ${g.plus1&&isIn      ? `<span class="badge b-p1">+1</span>`            : ''}
+        ${note&&!isOpen      ? `<span class="badge b-note" title="${esc(note)}">${esc(note)}</span>` : ''}
+        ${g.ts               ? `<span class="ts">${esc(g.ts)}</span>`          : ''}
+      </div>
     </div>
     <div class="gc-acts">
-      <button class="abt abt-p1${g.plus1?' on':''}" onclick="toggleP1('${esc(g.fid)}')" title="+1">+1</button>
-      <button class="abt abt-in${isIn?' on':''}"    onclick="admit('${esc(g.fid)}')"    title="Admit">✓</button>
-      <button class="abt abt-den${isDen?' on':''}"  onclick="deny('${esc(g.fid)}')"     title="Deny">✕</button>
+      <button class="abt abt-p1${g.plus1?' on':''}"  onclick="toggleP1('${esc(g.fid)}')" title="+1">+1</button>
+      <button class="abt abt-in${isIn?' on':''}"      onclick="admit('${esc(g.fid)}')"    title="Admit">✓</button>
+      <button class="abt abt-den${isDen?' on':''}"    onclick="deny('${esc(g.fid)}')"     title="Deny">✕</button>
     </div>
   </div>
   <div class="gc-notes">
-    <input type="text" placeholder="Note (VIP, check ID…)"
-           value="${esc(note)}"
-           oninput="onNoteInput('${esc(g.fid)}', this.value)"
-           onblur="onNoteBlur('${esc(g.fid)}', this.value)"
+    <input type="text" placeholder="Note (VIP, check ID…)" value="${esc(note)}"
+           oninput="onNoteInput('${esc(g.fid)}',this.value)"
+           onblur="onNoteBlur('${esc(g.fid)}',this.value)"
            autocomplete="off">
     <button class="rm-btn" onclick="removeGuest('${esc(g.fid)}')">Remove from list</button>
   </div>
 </div>`;
   }).join('');
 
-  // Restore focus
   if (focusedId) {
     const inp = document.querySelector(`.gc[data-id="${CSS.escape(focusedId)}"] .gc-notes input`);
     if (inp) inp.focus();
@@ -1049,42 +806,36 @@ function toggleOpen(fid) {
 // ── Export CSV ────────────────────────────────────
 function exportCSV() {
   const name = eventData.name || 'Event';
-  const q    = s => `"${String(s ?? '').replace(/"/g, '""')}"`;
-
+  const q    = s => `"${String(s??'').replace(/"/g,'""')}"`;
   const rows = [
-    [q('Event'),    q(name)],
-    [q('Date'),     q(eventData.dateDisplay || '')],
-    [q('Exported'), q(new Date().toLocaleString())],
+    [q('Event'), q(name)], [q('Date'), q(eventData.dateDisplay||'')],
+    [q('Exported'), q(new Date().toLocaleString())], [],
+    [q('Name'),q('Status'),q('Time In'),q('+1'),q('Do Not Admit'),q('Notes')],
+    ...guests.map(g=>[q(g.name),q(g.status),q(g.ts||''),q(g.plus1?'Yes':'No'),q(g.dna?'Yes':'No'),q(g.note||'')]),
     [],
-    [q('Name'), q('Status'), q('Time In'), q('+1'), q('Do Not Admit'), q('Notes')],
-    ...guests.map(g => [q(g.name), q(g.status), q(g.ts||''), q(g.plus1?'Yes':'No'), q(g.dna?'Yes':'No'), q(g.note||'')]),
-    [],
-    [q('Not-on-list walk-ins'), q(eventData.nolCount || 0)],
-    [q('Total headcount'),      q(headcount())],
-    [q('Admitted from list'),   q(guests.filter(g => g.status === 'admitted').length)],
-    [q('Denied'),               q(guests.filter(g => g.status === 'denied').length)],
-    [q('No-shows (pending)'),   q(guests.filter(g => g.status === 'pending').length)],
+    [q('Not-on-list walk-ins'),  q(eventData.nolCount||0)],
+    [q('Total headcount'),       q(headcount())],
+    [q('Admitted from list'),    q(guests.filter(g=>g.status==='admitted').length)],
+    [q('Denied'),                q(guests.filter(g=>g.status==='denied').length)],
+    [q('No-shows (pending)'),    q(guests.filter(g=>g.status==='pending').length)],
   ];
-
-  const csv  = rows.map(r => r.join(',')).join('\r\n');
-  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const csv  = rows.map(r=>r.join(',')).join('\r\n');
+  const blob = new Blob([csv],{type:'text/csv;charset=utf-8;'});
   const url  = URL.createObjectURL(blob);
-  const a    = Object.assign(document.createElement('a'), {
+  const a    = Object.assign(document.createElement('a'),{
     href: url,
     download: `doorlist-${name.toLowerCase().replace(/\s+/g,'-')}-${new Date().toISOString().split('T')[0]}.csv`
   });
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
 
-// ── Screens ───────────────────────────────────────
+// ── Screen helper ─────────────────────────────────
 function show(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   const el = document.getElementById(id);
   if (el) el.classList.add('active');
-  window.scrollTo(0, 0);
+  window.scrollTo(0,0);
 }
 </script>
 </body>
