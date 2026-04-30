@@ -225,6 +225,16 @@ body { background: var(--bg); color: var(--text); font-family: var(--font); min-
 }
 .ftab.on { background: var(--gold); border-color: var(--gold); color: #000; }
 
+.stabs { display: flex; gap: 3px; margin-top: 3px; align-items: center; }
+.stabs-lbl { font-size: .5rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); flex-shrink: 0; padding-right: .2rem; }
+.stab {
+  background: var(--surf2); border: 1px solid var(--border); color: var(--muted);
+  font-family: var(--font); font-size: .6rem; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; padding: .3rem .55rem; cursor: pointer; border-radius: 2px;
+  transition: all .15s; touch-action: manipulation; flex: 1; text-align: center;
+}
+.stab.on { background: #1e3a5f; border-color: #2563eb; color: #93c5fd; }
+
 /* ─── GUEST LIST ──────────────────────────────────── */
 .glist { padding: .75rem 1rem 7rem; display: flex; flex-direction: column; gap: .45rem; max-width: 600px; width: 100%; margin: 0 auto; }
 .empty { text-align: center; color: var(--muted); font-size: .85rem; letter-spacing: .05em; padding: 3.5rem 1rem; }
@@ -373,6 +383,12 @@ body { background: var(--bg); color: var(--text); font-family: var(--font); min-
       <button class="ftab"    onclick="setFilter('denied',this)">Denied</button>
       <button class="ftab"    onclick="setFilter('dna',this)">DNA</button>
     </div>
+    <div class="stabs">
+      <span class="stabs-lbl">Sort</span>
+      <button class="stab on" onclick="setSort('default',this)">Default</button>
+      <button class="stab"    onclick="setSort('last',this)">Last Name</button>
+      <button class="stab"    onclick="setSort('first',this)">First Name</button>
+    </div>
   </div>
 
   <div class="glist" id="glist"></div>
@@ -419,6 +435,7 @@ let guests         = [];
 let eventData      = {};
 let currentEventId = null;
 let filter         = 'all';
+let sort           = 'default';
 let unsubAll       = null;   // events list listener
 let unsubE         = null;   // current event listener
 let unsubG         = null;   // current event guests listener
@@ -522,9 +539,10 @@ function openEvent(id) {
     updateStats();
   });
 
-  // Reset filter + search
-  filter = 'all';
+  // Reset filter, sort + search
+  filter = 'all'; sort = 'default';
   document.querySelectorAll('.ftab').forEach((t,i) => t.classList.toggle('on', i === 0));
+  document.querySelectorAll('.stab').forEach((t,i) => t.classList.toggle('on', i === 0));
   const srch = document.getElementById('srch');
   if (srch) srch.value = '';
 
@@ -732,6 +750,13 @@ function setFilter(f, btn) {
   render();
 }
 
+function setSort(s, btn) {
+  sort = s;
+  document.querySelectorAll('.stab').forEach(t => t.classList.remove('on'));
+  btn.classList.add('on');
+  render();
+}
+
 // ── Render guest list ─────────────────────────────
 function esc(s) {
   return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -757,6 +782,16 @@ function render() {
   });
 
   if (!visible.length) { list.innerHTML=`<div class="empty">No guests found</div>`; return; }
+
+  if (sort === 'last') {
+    visible.sort((a,b) => {
+      const la = a.name.trim().split(/\s+/).pop().toLowerCase();
+      const lb = b.name.trim().split(/\s+/).pop().toLowerCase();
+      return la.localeCompare(lb);
+    });
+  } else if (sort === 'first') {
+    visible.sort((a,b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()));
+  }
 
   list.innerHTML = visible.map(g => {
     const isIn   = g.status==='admitted';
