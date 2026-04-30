@@ -38,8 +38,8 @@ body {
 .screen { display: none; min-height: 100vh; }
 .screen.active { display: flex; flex-direction: column; }
 
-/* ─── PASSWORD ──────────────────────────────────── */
-#pw {
+/* ─── LOGIN ──────────────────────────────────────── */
+#login {
   align-items: center;
   justify-content: center;
   padding: 2rem;
@@ -52,6 +52,7 @@ body {
   text-transform: uppercase;
   color: var(--muted);
   margin-bottom: 2.5rem;
+  text-align: center;
 }
 
 .pw-title {
@@ -76,34 +77,32 @@ body {
   letter-spacing: 0.35em;
   text-transform: uppercase;
   color: var(--muted);
-  margin-bottom: 3rem;
+  margin-bottom: 2.5rem;
   text-align: center;
 }
 
-.pw-form {
+.login-form {
   width: 100%;
   max-width: 300px;
   display: flex;
   flex-direction: column;
-  gap: 0.875rem;
+  gap: 0.75rem;
 }
 
-.pw-input {
+.login-input {
   background: #0e0e0e;
   border: 1px solid var(--border);
   color: var(--text);
   font-family: var(--font);
-  font-size: 1.4rem;
-  letter-spacing: 0.25em;
-  padding: 1rem 1.25rem;
-  text-align: center;
+  font-size: 1rem;
+  padding: 0.9rem 1rem;
   outline: none;
   transition: border-color 0.2s;
   border-radius: 2px;
   width: 100%;
 }
-.pw-input:focus { border-color: var(--gold); }
-.pw-input.shake {
+.login-input:focus { border-color: var(--gold); }
+.login-input.shake {
   border-color: var(--red);
   animation: shake 0.3s ease;
 }
@@ -113,21 +112,44 @@ body {
   60%      { transform: translateX(10px); }
 }
 
-.pw-error {
+.login-error {
   color: var(--red);
   font-size: 0.7rem;
-  letter-spacing: 0.15em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   text-align: center;
-  height: 0.9rem;
+  min-height: 0.9rem;
 }
 
-/* ─── BUTTONS ──────────────────────────────────── */
+/* ─── LOADING ────────────────────────────────────── */
+#loading {
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--border);
+  border-top-color: var(--gold);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.loading-txt {
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ─── BUTTONS ─────────────────────────────────────── */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.35rem;
   font-family: var(--font);
   font-weight: 700;
   font-size: 0.8rem;
@@ -143,14 +165,14 @@ body {
   white-space: nowrap;
 }
 .btn:active { opacity: 0.8; transform: scale(0.98); }
+.btn:disabled { opacity: 0.4; pointer-events: none; }
 
 .btn-gold  { background: var(--gold); color: #000; }
 .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--muted); }
-.btn-ghost:hover { border-color: var(--muted); color: var(--text); }
 .btn-full  { width: 100%; }
 .btn-sm    { font-size: 0.7rem; padding: 0.6rem 1rem; min-height: 40px; }
 
-/* ─── SETUP ─────────────────────────────────────── */
+/* ─── SETUP ──────────────────────────────────────── */
 #setup {
   padding: 1.75rem 1.25rem 4rem;
   max-width: 560px;
@@ -191,7 +213,22 @@ body {
 .fld .hint { font-size: 0.7rem; color: var(--muted); margin-top: 0.35rem; line-height: 1.45; }
 .fld .hint strong { color: #aaa; }
 
-/* ─── BOUNCER ────────────────────────────────────── */
+.setup-signout {
+  display: block;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-family: var(--font);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 0.5rem 0;
+  margin-top: 1.5rem;
+}
+.setup-signout:hover { color: var(--red); }
+
+/* ─── BOUNCER ─────────────────────────────────────── */
 #bouncer { flex-direction: column; }
 
 .b-top {
@@ -205,7 +242,7 @@ body {
 
 .b-hdr {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: space-between;
   margin-bottom: 0.6rem;
   gap: 0.5rem;
@@ -221,6 +258,22 @@ body {
   flex: 1;
 }
 .ev-date { font-size: 0.7rem; color: var(--muted); flex-shrink: 0; }
+
+.signout-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-family: var(--font);
+  font-size: 0.6rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 0.25rem 0.4rem;
+  border-radius: 2px;
+  flex-shrink: 0;
+  touch-action: manipulation;
+}
+.signout-btn:active { color: var(--red); }
 
 /* Stats */
 .stats {
@@ -250,9 +303,9 @@ body {
   color: var(--muted);
   margin-top: 0.15rem;
 }
-.stat.s-in   .stat-n { color: var(--green); }
-.stat.s-den  .stat-n { color: var(--red); }
-.stat.s-nol  .stat-n { color: #a78bfa; }
+.stat.s-in  .stat-n { color: var(--green); }
+.stat.s-den .stat-n { color: var(--red); }
+.stat.s-nol .stat-n { color: #a78bfa; }
 
 /* Capacity banner */
 .cap-warn {
@@ -315,11 +368,7 @@ body {
 .nol-btn:active { background: #1e0e40; }
 
 /* Filter tabs */
-.ftabs {
-  display: flex;
-  gap: 3px;
-  margin-top: 0.5rem;
-}
+.ftabs { display: flex; gap: 3px; margin-top: 0.5rem; }
 .ftab {
   background: var(--surf2);
   border: 1px solid var(--border);
@@ -339,7 +388,7 @@ body {
 }
 .ftab.on { background: var(--gold); border-color: var(--gold); color: #000; }
 
-/* ─── GUEST LIST ─────────────────────────────────── */
+/* ─── GUEST LIST ──────────────────────────────────── */
 .glist {
   padding: 0.75rem 1rem 7rem;
   display: flex;
@@ -418,7 +467,9 @@ body {
 }
 .b-dna  { background: #2a0606; color: #f87171; border: 1px solid var(--red-bd); }
 .b-p1   { background: #052010; color: var(--green); border: 1px solid var(--green-bd); }
-.b-note { background: #1a1000; color: var(--gold); border: 1px solid var(--gold-dim); max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block; vertical-align: middle; }
+.b-note { background: #1a1000; color: var(--gold); border: 1px solid var(--gold-dim);
+          max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+          display: inline-block; vertical-align: middle; }
 .ts     { font-size: 0.6rem; color: var(--muted); }
 
 /* Action buttons */
@@ -445,13 +496,8 @@ body {
   color: var(--muted);
   border: 1px solid var(--border);
   font-size: 0.7rem;
-  letter-spacing: 0.02em;
 }
-.abt-p1.on {
-  background: #052010;
-  color: var(--green);
-  border-color: var(--green-bd);
-}
+.abt-p1.on { background: #052010; color: var(--green); border-color: var(--green-bd); }
 
 .abt-in {
   background: #0a2016;
@@ -472,7 +518,7 @@ body {
 /* Notes panel */
 .gc-notes {
   border-top: 1px solid var(--border);
-  padding: 0.5rem 0.875rem;
+  padding: 0.5rem 0.875rem 0.65rem;
   display: none;
 }
 .gc.open .gc-notes { display: block; }
@@ -491,7 +537,22 @@ body {
 }
 .gc-notes input:focus { border-color: var(--gold); }
 
-/* ─── BOTTOM BAR ─────────────────────────────────── */
+.rm-btn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-family: var(--font);
+  font-size: 0.65rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 0.4rem 0 0;
+  display: block;
+  transition: color 0.15s;
+}
+.rm-btn:hover, .rm-btn:active { color: var(--red); }
+
+/* ─── BOTTOM BAR ──────────────────────────────────── */
 .bbar-wrap {
   position: fixed;
   bottom: 0;
@@ -514,50 +575,59 @@ body {
 </head>
 <body>
 
-<!-- ═══════════════ PASSWORD ═══════════════ -->
-<div id="pw" class="screen active">
+<!-- ═══════════════ LOGIN ═══════════════ -->
+<div id="login" class="screen active">
   <p class="pw-eyebrow">Staff Access Only</p>
   <h1 class="pw-title">DOOR<br>LIST</h1>
   <div class="pw-rule"></div>
   <p class="pw-sub">Authorized Personnel</p>
-  <form class="pw-form" onsubmit="checkPw(event)">
-    <input id="pw-in" type="password" class="pw-input" placeholder="••••••••"
-           autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-    <p id="pw-err" class="pw-error"></p>
-    <button type="submit" class="btn btn-gold btn-full">Enter</button>
+  <form class="login-form" onsubmit="doLogin(event)">
+    <input id="l-email" type="email"    class="login-input" placeholder="Email"    autocomplete="email"     autocorrect="off" autocapitalize="off">
+    <input id="l-pw"    type="password" class="login-input" placeholder="Password" autocomplete="current-password">
+    <p id="l-err" class="login-error"></p>
+    <button id="l-btn" type="submit" class="btn btn-gold btn-full">Sign In</button>
   </form>
+</div>
+
+<!-- ═══════════════ LOADING ═══════════════ -->
+<div id="loading" class="screen">
+  <div class="spinner"></div>
+  <p class="loading-txt">Connecting…</p>
 </div>
 
 <!-- ═══════════════ SETUP ═══════════════ -->
 <div id="setup" class="screen">
-  <div class="setup-hd">
-    <h1>Event Setup</h1>
-    <p>Configure your event and paste the guest list</p>
-  </div>
-
-  <div class="row2">
-    <div class="fld">
-      <label for="ev-name">Party Name</label>
-      <input id="ev-name" type="text" placeholder="Saturday Night">
+  <div style="max-width:560px;margin:0 auto;width:100%;padding:1.75rem 1.25rem 4rem;">
+    <div class="setup-hd">
+      <h1>Event Setup</h1>
+      <p>Configure your event and paste the guest list</p>
     </div>
-    <div class="fld">
-      <label for="ev-date">Date</label>
-      <input id="ev-date" type="date">
+
+    <div class="row2">
+      <div class="fld">
+        <label for="ev-name">Party Name</label>
+        <input id="ev-name" type="text" placeholder="Saturday Night">
+      </div>
+      <div class="fld">
+        <label for="ev-date">Date</label>
+        <input id="ev-date" type="date">
+      </div>
     </div>
-  </div>
 
-  <div class="fld">
-    <label for="ev-cap">Max Headcount</label>
-    <input id="ev-cap" type="number" placeholder="200" min="1" inputmode="numeric">
-  </div>
+    <div class="fld">
+      <label for="ev-cap">Max Headcount</label>
+      <input id="ev-cap" type="number" placeholder="200" min="1" inputmode="numeric">
+    </div>
 
-  <div class="fld">
-    <label for="ev-list">Guest List</label>
-    <textarea id="ev-list" placeholder="John Doe&#10;Jane Smith X&#10;Mike Johnson | VIP&#10;Sarah Lee X | Check ID&#10;Alex Kim | +2 expected"></textarea>
-    <p class="hint">One name per line. Append <strong>X</strong> to flag DO NOT ADMIT. Add <strong>| note</strong> for inline notes.</p>
-  </div>
+    <div class="fld">
+      <label for="ev-list">Guest List</label>
+      <textarea id="ev-list" placeholder="John Doe&#10;Jane Smith X&#10;Mike Johnson | VIP&#10;Sarah Lee X | Check ID"></textarea>
+      <p class="hint">One name per line. Append <strong>X</strong> to flag DO NOT ADMIT. Add <strong>| note</strong> for inline notes.</p>
+    </div>
 
-  <button class="btn btn-gold btn-full" onclick="loadList()">Load Guest List →</button>
+    <button id="load-btn" class="btn btn-gold btn-full" onclick="loadList()">Load Guest List →</button>
+    <button class="setup-signout" onclick="doSignOut()">Sign Out</button>
+  </div>
 </div>
 
 <!-- ═══════════════ BOUNCER ═══════════════ -->
@@ -567,6 +637,7 @@ body {
     <div class="b-hdr">
       <span class="ev-name" id="d-name">Event</span>
       <span class="ev-date" id="d-date"></span>
+      <button class="signout-btn" onclick="doSignOut()">Sign Out</button>
     </div>
 
     <div id="cap-warn" class="cap-warn"></div>
@@ -614,126 +685,219 @@ body {
   <div class="bbar-wrap">
     <div class="bbar">
       <button class="btn btn-ghost btn-sm" onclick="goSetup()" style="flex:0 0 auto">← Edit</button>
-      <button class="btn btn-gold btn-sm" onclick="exportCSV()" style="flex:1">Export CSV</button>
+      <button class="btn btn-gold  btn-sm" onclick="exportCSV()" style="flex:1">Export CSV</button>
     </div>
   </div>
 </div>
 
+<!-- Firebase compat SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
 <script>
 // ════════════════════════════════════════════════════
-//  CHANGE THIS BEFORE EACH EVENT
-const PASSWORD = 'doorman2024';
+//  FIREBASE CONFIG
+const firebaseConfig = {
+  apiKey:            "AIzaSyAvjrRwEXYrPNvJmH_JBh_BCBAV4IhFevE",
+  authDomain:        "fhpartty.firebaseapp.com",
+  projectId:         "fhpartty",
+  storageBucket:     "fhpartty.firebasestorage.app",
+  messagingSenderId: "59717956859",
+  appId:             "1:59717956859:web:ebfc22e08bc17695872c5e"
+};
 // ════════════════════════════════════════════════════
 
-let guests      = [];
-let nolCount    = 0;
-let maxCap      = 0;
-let filter      = 'all';
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db   = firebase.firestore();
 
-// ── Screens ───────────────────────────────────────
-function show(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  window.scrollTo(0, 0);
-}
+const EVENT_DOC  = db.collection('events').doc('current');
+const GUESTS_COL = EVENT_DOC.collection('guests');
 
-// ── Password ──────────────────────────────────────
-function checkPw(e) {
-  e.preventDefault();
-  const inp = document.getElementById('pw-in');
-  const err = document.getElementById('pw-err');
-  if (inp.value === PASSWORD) {
-    show('setup');
-    document.getElementById('ev-date').value = new Date().toISOString().split('T')[0];
+let guests    = [];
+let eventData = {};
+let filter    = 'all';
+let unsubE    = null;
+let unsubG    = null;
+const noteDraft = {};
+
+// ── Auth ──────────────────────────────────────────
+auth.onAuthStateChanged(user => {
+  if (user) {
+    startSync();
   } else {
+    stopSync();
+    show('login');
+  }
+});
+
+async function doLogin(e) {
+  e.preventDefault();
+  const email = document.getElementById('l-email').value.trim();
+  const pw    = document.getElementById('l-pw').value;
+  const err   = document.getElementById('l-err');
+  const btn   = document.getElementById('l-btn');
+
+  btn.disabled    = true;
+  btn.textContent = 'Signing in…';
+  err.textContent = '';
+
+  try {
+    await auth.signInWithEmailAndPassword(email, pw);
+  } catch {
+    err.textContent = 'Invalid email or password.';
+    btn.disabled    = false;
+    btn.textContent = 'Sign In';
+    document.getElementById('l-pw').value = '';
+    const inp = document.getElementById('l-pw');
     inp.classList.add('shake');
-    err.textContent = 'Access denied.';
-    inp.value = '';
     setTimeout(() => inp.classList.remove('shake'), 400);
   }
 }
-document.getElementById('pw-in').addEventListener('input', () => {
-  document.getElementById('pw-err').textContent = '';
-});
 
-// ── Parse list ────────────────────────────────────
-function parseList(text) {
-  return text.split('\n')
-    .map(l => l.trim())
-    .filter(Boolean)
-    .map((line, i) => {
-      const [namePart, ...noteParts] = line.split('|');
-      const noteRaw = noteParts.join('|').trim();
-
-      const words = namePart.trim().split(/\s+/);
-      const lastWord = words[words.length - 1];
-      const dna = lastWord.toUpperCase() === 'X';
-      const name = dna ? words.slice(0, -1).join(' ') : words.join(' ');
-
-      return { id: i, name: name || `Guest ${i + 1}`, note: noteRaw, dna,
-               status: 'pending', plus1: false, ts: null };
-    });
+async function doSignOut() {
+  await auth.signOut();
 }
 
-function loadList() {
+// ── Sync ──────────────────────────────────────────
+function startSync() {
+  show('loading');
+
+  // Determine initial screen
+  EVENT_DOC.get().then(snap => {
+    show(snap.exists ? 'bouncer' : 'setup');
+    if (snap.exists) {
+      document.getElementById('ev-date').value =
+        new Date().toISOString().split('T')[0];
+    }
+  }).catch(() => show('setup'));
+
+  // Live event metadata
+  unsubE = EVENT_DOC.onSnapshot(snap => {
+    if (!snap.exists) return;
+    eventData = snap.data();
+    document.getElementById('d-name').textContent = eventData.name        || 'Event';
+    document.getElementById('d-date').textContent = eventData.dateDisplay || '';
+    updateStats();
+  });
+
+  // Live guest list
+  unsubG = GUESTS_COL.orderBy('order').onSnapshot(snap => {
+    guests = snap.docs.map(d => ({ fid: d.id, ...d.data() }));
+    render();
+    updateStats();
+  });
+}
+
+function stopSync() {
+  if (unsubE) { unsubE(); unsubE = null; }
+  if (unsubG) { unsubG(); unsubG = null; }
+  guests    = [];
+  eventData = {};
+}
+
+// ── Load list ─────────────────────────────────────
+async function loadList() {
   const raw = document.getElementById('ev-list').value.trim();
   if (!raw) { alert('Paste a guest list first.'); return; }
 
-  guests   = parseList(raw);
-  nolCount = 0;
-  maxCap   = parseInt(document.getElementById('ev-cap').value) || 0;
-  filter   = 'all';
+  const name   = document.getElementById('ev-name').value.trim() || 'Event';
+  const dateV  = document.getElementById('ev-date').value;
+  const capV   = parseInt(document.getElementById('ev-cap').value) || 0;
 
-  const name = document.getElementById('ev-name').value.trim() || 'Event';
-  const dateVal = document.getElementById('ev-date').value;
-  document.getElementById('d-name').textContent = name;
-
-  if (dateVal) {
-    const d = new Date(dateVal + 'T12:00:00');
-    document.getElementById('d-date').textContent =
-      d.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
+  let dateDisplay = '';
+  if (dateV) {
+    dateDisplay = new Date(dateV + 'T12:00:00')
+      .toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
   }
 
-  document.querySelectorAll('.ftab').forEach((t,i) => t.classList.toggle('on', i === 0));
-  show('bouncer');
-  render();
-  updateStats();
+  const newGuests = parseList(raw);
+  const btn = document.getElementById('load-btn');
+  btn.disabled    = true;
+  btn.textContent = 'Loading…';
+
+  try {
+    // Delete existing guests in chunks of 499
+    const existing = await GUESTS_COL.get();
+    if (!existing.empty) {
+      for (const chunk of chunks([...existing.docs], 499)) {
+        const b = db.batch();
+        chunk.forEach(d => b.delete(d.ref));
+        await b.commit();
+      }
+    }
+
+    // Write new guests in chunks of 499
+    for (const chunk of chunks(newGuests, 499)) {
+      const b = db.batch();
+      chunk.forEach(g => b.set(GUESTS_COL.doc(), g));
+      await b.commit();
+    }
+
+    // Update event document
+    await EVENT_DOC.set({ name, date: dateV, dateDisplay, maxCapacity: capV, nolCount: 0 });
+
+    show('bouncer');
+  } catch (ex) {
+    alert('Failed to load list. Check your connection and try again.');
+    console.error(ex);
+  } finally {
+    btn.disabled    = false;
+    btn.textContent = 'Load Guest List →';
+  }
+}
+
+function chunks(arr, size) {
+  const out = [];
+  for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
+  return out;
+}
+
+function parseList(text) {
+  return text.split('\n').map(l => l.trim()).filter(Boolean).map((line, i) => {
+    const [namePart, ...rest] = line.split('|');
+    const note  = rest.join('|').trim();
+    const words = namePart.trim().split(/\s+/);
+    const dna   = words[words.length - 1].toUpperCase() === 'X';
+    const name  = dna ? words.slice(0, -1).join(' ') : words.join(' ');
+    return { order: i, name: name || `Guest ${i + 1}`, note, dna, status: 'pending', plus1: false, ts: null };
+  });
 }
 
 function goSetup() {
-  if (guests.length && !confirm('Return to setup? Session data is kept.')) return;
+  if (guests.length && !confirm('Return to setup? Live session data will be kept in Firestore.')) return;
+  document.getElementById('ev-date').value = new Date().toISOString().split('T')[0];
   show('setup');
 }
 
-// ── Headcount ─────────────────────────────────────
+// ── Stats ─────────────────────────────────────────
 function headcount() {
   const admitted = guests.filter(g => g.status === 'admitted');
-  return admitted.length + admitted.filter(g => g.plus1).length + nolCount;
+  return admitted.length + admitted.filter(g => g.plus1).length + (eventData.nolCount || 0);
 }
 
-// ── Stats ─────────────────────────────────────────
 function updateStats() {
-  const hc   = headcount();
-  const den  = guests.filter(g => g.status === 'denied').length;
-  const pend = guests.filter(g => g.status === 'pending').length;
+  const hc  = headcount();
+  const cap = eventData.maxCapacity || 0;
 
   document.getElementById('s-tot').textContent  = guests.length;
   document.getElementById('s-in').textContent   = hc;
-  document.getElementById('s-den').textContent  = den;
-  document.getElementById('s-pend').textContent = pend;
-  document.getElementById('s-nol').textContent  = nolCount;
+  document.getElementById('s-den').textContent  = guests.filter(g => g.status === 'denied').length;
+  document.getElementById('s-pend').textContent = guests.filter(g => g.status === 'pending').length;
+  document.getElementById('s-nol').textContent  = eventData.nolCount || 0;
 
   const warn = document.getElementById('cap-warn');
-  if (maxCap > 0) {
-    const left = maxCap - hc;
-    if (hc >= maxCap) {
+  if (cap > 0) {
+    const left = cap - hc;
+    if (hc >= cap) {
       warn.style.display = 'block';
-      warn.className = 'cap-warn full';
-      warn.textContent = `⛔ AT CAPACITY — ${hc} / ${maxCap}`;
+      warn.className     = 'cap-warn full';
+      warn.textContent   = `⛔ AT CAPACITY — ${hc} / ${cap}`;
     } else if (left <= 10) {
       warn.style.display = 'block';
-      warn.className = 'cap-warn';
-      warn.textContent = `⚠ NEAR CAPACITY — ${left} spot${left === 1 ? '' : 's'} left`;
+      warn.className     = 'cap-warn';
+      warn.textContent   = `⚠ NEAR CAPACITY — ${left} spot${left === 1 ? '' : 's'} left`;
     } else {
       warn.style.display = 'none';
     }
@@ -742,62 +906,60 @@ function updateStats() {
   }
 }
 
-// ── Actions ───────────────────────────────────────
-function admit(id) {
-  const g = guests.find(g => g.id === id);
+// ── Guest actions (all write to Firestore) ────────
+async function admit(fid) {
+  const g = guests.find(g => g.fid === fid);
   if (!g) return;
-  if (g.status !== 'admitted' && maxCap > 0 && headcount() >= maxCap) {
-    if (!confirm(`⛔ AT CAPACITY (${maxCap})\n\nAdmit anyway?`)) return;
+  const cap = eventData.maxCapacity || 0;
+  if (g.status !== 'admitted' && cap > 0 && headcount() >= cap) {
+    if (!confirm(`⛔ AT CAPACITY (${cap})\n\nAdmit anyway?`)) return;
   }
-  if (g.status === 'admitted') {
-    g.status = 'pending'; g.ts = null; g.plus1 = false;
-  } else {
-    g.status = 'admitted';
-    g.ts = new Date().toLocaleTimeString('en-US', { hour:'2-digit', minute:'2-digit' });
-  }
-  render(); updateStats();
+  await GUESTS_COL.doc(fid).update(
+    g.status === 'admitted'
+      ? { status: 'pending', ts: null, plus1: false }
+      : { status: 'admitted', ts: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) }
+  );
 }
 
-function deny(id) {
-  const g = guests.find(g => g.id === id);
+async function deny(fid) {
+  const g = guests.find(g => g.fid === fid);
   if (!g) return;
-  if (g.status === 'denied') {
-    g.status = 'pending';
-  } else {
-    g.status = 'denied'; g.ts = null; g.plus1 = false;
-  }
-  render(); updateStats();
+  await GUESTS_COL.doc(fid).update(
+    g.status === 'denied'
+      ? { status: 'pending' }
+      : { status: 'denied', ts: null, plus1: false }
+  );
 }
 
-function toggleP1(id) {
-  const g = guests.find(g => g.id === id);
+async function toggleP1(fid) {
+  const g = guests.find(g => g.fid === fid);
   if (!g || g.status !== 'admitted') return;
-  g.plus1 = !g.plus1;
-  render(); updateStats();
+  await GUESTS_COL.doc(fid).update({ plus1: !g.plus1 });
 }
 
-function setNote(id, val) {
-  const g = guests.find(g => g.id === id);
-  if (g) g.note = val;
-}
-
-function toggleOpen(id) {
-  const card = document.getElementById('gc-' + id);
-  if (card) card.classList.toggle('open');
-}
-
-function addNOL() {
-  if (maxCap > 0 && headcount() >= maxCap) {
-    if (!confirm(`⛔ AT CAPACITY (${maxCap})\n\nAdd anyway?`)) return;
+async function addNOL() {
+  const cap = eventData.maxCapacity || 0;
+  if (cap > 0 && headcount() >= cap) {
+    if (!confirm(`⛔ AT CAPACITY (${cap})\n\nAdd walk-in anyway?`)) return;
   }
-  nolCount++;
-  updateStats();
-  const el = document.querySelector('.stat.s-nol');
-  el.style.background = '#1e0e40';
-  setTimeout(() => el.style.background = '', 300);
+  await EVENT_DOC.update({ nolCount: firebase.firestore.FieldValue.increment(1) });
 }
 
-// ── Filter ────────────────────────────────────────
+async function removeGuest(fid) {
+  if (!confirm('Remove this guest from the list?')) return;
+  await GUESTS_COL.doc(fid).delete();
+}
+
+// Notes: update local draft instantly, write to Firestore on blur
+function onNoteInput(fid, val) {
+  noteDraft[fid] = val;
+}
+async function onNoteBlur(fid, val) {
+  delete noteDraft[fid];
+  await GUESTS_COL.doc(fid).update({ note: val });
+}
+
+// ── Filter / search ───────────────────────────────
 function setFilter(f, btn) {
   filter = f;
   document.querySelectorAll('.ftab').forEach(t => t.classList.remove('on'));
@@ -811,16 +973,22 @@ function esc(s) {
 }
 
 function render() {
-  const q = (document.getElementById('srch').value || '').toLowerCase().trim();
+  const q    = (document.getElementById('srch')?.value || '').toLowerCase().trim();
   const list = document.getElementById('glist');
+  if (!list) return;
+
+  // Preserve open cards and focused input
+  const openSet   = new Set([...document.querySelectorAll('.gc.open')].map(el => el.dataset.id));
+  const focusedId = document.activeElement?.closest('.gc')?.dataset.id;
 
   const visible = guests.filter(g => {
-    const matchQ = !q || g.name.toLowerCase().includes(q) || g.note.toLowerCase().includes(q);
+    const note  = noteDraft[g.fid] ?? g.note ?? '';
+    const matchQ = !q || g.name.toLowerCase().includes(q) || note.toLowerCase().includes(q);
     const matchF =
       filter === 'all'      ? true :
-      filter === 'pending'  ? g.status === 'pending' :
+      filter === 'pending'  ? g.status === 'pending'  :
       filter === 'admitted' ? g.status === 'admitted' :
-      filter === 'denied'   ? g.status === 'denied' :
+      filter === 'denied'   ? g.status === 'denied'   :
       filter === 'dna'      ? g.dna : true;
     return matchQ && matchF;
   });
@@ -830,88 +998,94 @@ function render() {
     return;
   }
 
-  // Preserve open state
-  const openSet = new Set(
-    [...document.querySelectorAll('.gc.open')].map(el => parseInt(el.id.replace('gc-','')))
-  );
-
   list.innerHTML = visible.map(g => {
-    const isIn  = g.status === 'admitted';
-    const isDen = g.status === 'denied';
-    const isOpen = openSet.has(g.id);
+    const isIn   = g.status === 'admitted';
+    const isDen  = g.status === 'denied';
+    const isOpen = openSet.has(g.fid);
+    const note   = noteDraft[g.fid] ?? g.note ?? '';
 
-    const dnaBadge  = g.dna ? `<span class="badge b-dna">Do Not Admit</span>` : '';
+    const dnaBadge  = g.dna      ? `<span class="badge b-dna">Do Not Admit</span>` : '';
     const p1Badge   = g.plus1 && isIn ? `<span class="badge b-p1">+1</span>` : '';
-    const noteBadge = g.note && !isOpen ? `<span class="badge b-note" title="${esc(g.note)}">${esc(g.note)}</span>` : '';
-    const tsSpan    = g.ts ? `<span class="ts">${esc(g.ts)}</span>` : '';
+    const noteBadge = note && !isOpen ? `<span class="badge b-note" title="${esc(note)}">${esc(note)}</span>` : '';
+    const tsSpan    = g.ts        ? `<span class="ts">${esc(g.ts)}</span>` : '';
 
     return `
-<div class="gc${isIn?' admitted':''}${isDen?' denied':''}${g.dna?' dna':''}${isOpen?' open':''}" id="gc-${g.id}">
+<div class="gc${isIn?' admitted':''}${isDen?' denied':''}${g.dna?' dna':''}${isOpen?' open':''}"
+     data-id="${esc(g.fid)}">
   <div class="gc-main">
-    <div class="gc-info" onclick="toggleOpen(${g.id})">
+    <div class="gc-info" onclick="toggleOpen('${esc(g.fid)}')">
       <div class="gc-name">${esc(g.name)}</div>
       <div class="gc-meta">${dnaBadge}${p1Badge}${noteBadge}${tsSpan}</div>
     </div>
     <div class="gc-acts">
-      <button class="abt abt-p1${g.plus1?' on':''}" onclick="toggleP1(${g.id})" title="Toggle +1">+1</button>
-      <button class="abt abt-in${isIn?' on':''}"   onclick="admit(${g.id})"    title="Admit">✓</button>
-      <button class="abt abt-den${isDen?' on':''}" onclick="deny(${g.id})"     title="Deny">✕</button>
+      <button class="abt abt-p1${g.plus1?' on':''}" onclick="toggleP1('${esc(g.fid)}')" title="+1">+1</button>
+      <button class="abt abt-in${isIn?' on':''}"    onclick="admit('${esc(g.fid)}')"    title="Admit">✓</button>
+      <button class="abt abt-den${isDen?' on':''}"  onclick="deny('${esc(g.fid)}')"     title="Deny">✕</button>
     </div>
   </div>
   <div class="gc-notes">
     <input type="text" placeholder="Note (VIP, check ID…)"
-           value="${esc(g.note)}"
-           oninput="setNote(${g.id}, this.value)"
+           value="${esc(note)}"
+           oninput="onNoteInput('${esc(g.fid)}', this.value)"
+           onblur="onNoteBlur('${esc(g.fid)}', this.value)"
            autocomplete="off">
+    <button class="rm-btn" onclick="removeGuest('${esc(g.fid)}')">Remove from list</button>
   </div>
 </div>`;
   }).join('');
+
+  // Restore focus
+  if (focusedId) {
+    const inp = document.querySelector(`.gc[data-id="${CSS.escape(focusedId)}"] .gc-notes input`);
+    if (inp) inp.focus();
+  }
+}
+
+function toggleOpen(fid) {
+  const card = document.querySelector(`.gc[data-id="${CSS.escape(fid)}"]`);
+  if (card) card.classList.toggle('open');
 }
 
 // ── Export CSV ────────────────────────────────────
 function exportCSV() {
-  const name    = document.getElementById('d-name').textContent;
-  const dateStr = document.getElementById('d-date').textContent;
-  const hc      = headcount();
-
-  const q = s => `"${String(s ?? '').replace(/"/g,'""')}"`;
+  const name = eventData.name || 'Event';
+  const q    = s => `"${String(s ?? '').replace(/"/g, '""')}"`;
 
   const rows = [
-    [q('Event'), q(name)],
-    [q('Date'),  q(dateStr)],
+    [q('Event'),    q(name)],
+    [q('Date'),     q(eventData.dateDisplay || '')],
     [q('Exported'), q(new Date().toLocaleString())],
     [],
     [q('Name'), q('Status'), q('Time In'), q('+1'), q('Do Not Admit'), q('Notes')],
-    ...guests.map(g => [
-      q(g.name),
-      q(g.status),
-      q(g.ts || ''),
-      q(g.plus1 ? 'Yes' : 'No'),
-      q(g.dna   ? 'Yes' : 'No'),
-      q(g.note)
-    ]),
+    ...guests.map(g => [q(g.name), q(g.status), q(g.ts||''), q(g.plus1?'Yes':'No'), q(g.dna?'Yes':'No'), q(g.note||'')]),
     [],
-    [q('Not-on-list walk-ins'), q(nolCount)],
-    [q('Total headcount'), q(hc)],
-    [q('Admitted from list'), q(guests.filter(g=>g.status==='admitted').length)],
-    [q('Denied'), q(guests.filter(g=>g.status==='denied').length)],
-    [q('No-shows (pending)'), q(guests.filter(g=>g.status==='pending').length)],
+    [q('Not-on-list walk-ins'), q(eventData.nolCount || 0)],
+    [q('Total headcount'),      q(headcount())],
+    [q('Admitted from list'),   q(guests.filter(g => g.status === 'admitted').length)],
+    [q('Denied'),               q(guests.filter(g => g.status === 'denied').length)],
+    [q('No-shows (pending)'),   q(guests.filter(g => g.status === 'pending').length)],
   ];
 
   const csv  = rows.map(r => r.join(',')).join('\r\n');
   const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
   const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  a.href     = url;
-  a.download = `doorlist-${name.toLowerCase().replace(/\s+/g,'-')}-${new Date().toISOString().split('T')[0]}.csv`;
+  const a    = Object.assign(document.createElement('a'), {
+    href: url,
+    download: `doorlist-${name.toLowerCase().replace(/\s+/g,'-')}-${new Date().toISOString().split('T')[0]}.csv`
+  });
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
 }
 
-// ── Init ──────────────────────────────────────────
-document.getElementById('pw-in').focus();
+// ── Screens ───────────────────────────────────────
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
+  window.scrollTo(0, 0);
+}
 </script>
 </body>
 </html>
