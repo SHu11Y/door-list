@@ -343,7 +343,10 @@ body { background: var(--bg); color: var(--text); font-family: var(--font); min-
 <div id="events" class="screen">
   <div class="events-hd">
     <h1>The FreakHouse</h1>
-    <button class="hd-signout" onclick="doSignOut()">Sign Out</button>
+    <div style="display:flex;align-items:center;gap:.5rem;">
+      <a id="admin-link-ev" href="admin.html" class="hd-signout" style="display:none;color:var(--gold);">Admin ›</a>
+      <button class="hd-signout" onclick="doSignOut()">Sign Out</button>
+    </div>
   </div>
   <div class="ev-cards" id="ev-cards"></div>
   <div class="ev-bbar">
@@ -437,6 +440,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font); min-
       <button class="btn btn-ghost btn-sm" onclick="reloadSetup()"  style="flex:0 0 auto">Reload</button>
       <button class="btn btn-ghost btn-sm" onclick="openAddGuest()" style="flex:0 0 auto">+ Guest</button>
       <button class="btn btn-gold  btn-sm" onclick="exportCSV()"    style="flex:1">Export CSV</button>
+      <a id="admin-link" href="admin.html" class="btn btn-ghost btn-sm" style="flex:0 0 auto;display:none">Admin</a>
     </div>
   </div>
 </div>
@@ -491,6 +495,9 @@ const noteDraft    = {};
 // ── Auth ──────────────────────────────────────────
 auth.onAuthStateChanged(user => {
   if (user) {
+    const isAdmin = user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+    document.getElementById('admin-link').style.display    = isAdmin ? '' : 'none';
+    document.getElementById('admin-link-ev').style.display = isAdmin ? '' : 'none';
     show('loading');
     startEventsListener();
   } else {
