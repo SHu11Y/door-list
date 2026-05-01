@@ -508,6 +508,9 @@ async function doLogin(e) {
   btn.disabled = true; btn.textContent = 'Signing in…'; err.textContent = '';
   try {
     await auth.signInWithEmailAndPassword(email, pw);
+    if (email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
+      window.location.href = 'admin.html';
+    }
   } catch {
     err.textContent = 'Invalid email or password.';
     btn.disabled = false; btn.textContent = 'Sign In';
