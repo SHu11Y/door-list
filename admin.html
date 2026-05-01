@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Admin — The FreakHouse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+:root {
+  --bg: #080808; --surf: #141414; --surf2: #1e1e1e; --border: #2a2a2a;
+  --gold: #D4A017; --gold-dim: #8a6808;
+  --green: #22c55e; --green-bg: #0d1f0f; --green-bd: #166534;
+  --red: #ef4444;   --red-bg: #1f0d0d;   --red-bd: #7f1d1d;
+  --text: #f0f0f0; --muted: #666;
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+
+.screen { display: none; min-height: 100vh; flex-direction: column; }
+.screen.active { display: flex; }
+
+/* ── Login ─────────────────────────────────────── */
+#login { align-items: center; justify-content: center; padding: 2rem; background: radial-gradient(ellipse at center,#111 0%,#080808 70%); }
+.pw-eyebrow { font-size:.65rem; letter-spacing:.5em; text-transform:uppercase; color:var(--muted); margin-bottom:2.5rem; }
+.pw-title   { font-size:clamp(2rem,8vw,3rem); font-weight:900; letter-spacing:.08em; color:var(--gold); text-transform:uppercase; text-align:center; line-height:1; }
+.pw-rule    { width:48px; height:1px; background:var(--gold-dim); margin:1.25rem auto 1rem; }
+.pw-sub     { font-size:.7rem; letter-spacing:.35em; text-transform:uppercase; color:var(--muted); margin-bottom:2.5rem; text-align:center; }
+.login-form { width:100%; max-width:300px; display:flex; flex-direction:column; gap:.75rem; }
+.login-input { background:#0e0e0e; border:1px solid var(--border); color:var(--text); font-family:var(--font); font-size:1rem; padding:.9rem 1rem; outline:none; transition:border-color .2s; border-radius:2px; width:100%; }
+.login-input:focus { border-color:var(--gold); }
+.login-input.shake { border-color:var(--red); animation:shake .3s ease; }
+@keyframes shake { 0%,100%{transform:translateX(0)} 20%{transform:translateX(-10px)} 60%{transform:translateX(10px)} }
+.login-error { color:var(--red); font-size:.7rem; letter-spacing:.1em; text-transform:uppercase; text-align:center; min-height:.9rem; }
+
+/* ── Shared buttons ────────────────────────────── */
+.btn { display:inline-flex; align-items:center; justify-content:center; font-family:var(--font); font-weight:700; font-size:.8rem; letter-spacing:.08em; text-transform:uppercase; padding:.75rem 1.25rem; border:none; cursor:pointer; border-radius:2px; min-height:44px; touch-action:manipulation; transition:opacity .15s; white-space:nowrap; }
+.btn:active   { opacity:.8; }
+.btn:disabled { opacity:.3; pointer-events:none; }
+.btn-gold  { background:var(--gold); color:#000; }
+.btn-ghost { background:transparent; border:1px solid var(--border); color:var(--muted); }
+.btn-red   { background:var(--red-bg); color:var(--red); border:1px solid var(--red-bd); }
+.btn-green { background:var(--green-bg); color:var(--green); border:1px solid var(--green-bd); }
+.btn-full  { width:100%; }
+.btn-sm    { font-size:.65rem; padding:.45rem .75rem; min-height:34px; }
+
+/* ── Loading ───────────────────────────────────── */
+#loading { align-items:center; justify-content:center; gap:.75rem; }
+.spinner { width:28px; height:28px; border:2px solid var(--border); border-top-color:var(--gold); border-radius:50%; animation:spin .8s linear infinite; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.loading-txt { font-size:.65rem; letter-spacing:.3em; text-transform:uppercase; color:var(--muted); }
+
+/* ── Dashboard layout ──────────────────────────── */
+#dashboard { flex-direction:column; }
+
+.dash-hd {
+  background:var(--surf); border-bottom:1px solid var(--border);
+  padding:.75rem 1rem; display:flex; align-items:center; justify-content:space-between;
+}
+.dash-hd h1 { font-size:1rem; font-weight:900; color:var(--gold); letter-spacing:.06em; text-transform:uppercase; }
+.dash-user  { font-size:.65rem; color:var(--muted); }
+.so-btn { background:none; border:none; color:var(--muted); font-family:var(--font); font-size:.65rem; letter-spacing:.08em; text-transform:uppercase; cursor:pointer; padding:.3rem .4rem; }
+.so-btn:active { color:var(--red); }
+
+/* Tabs */
+.tabs { display:flex; background:var(--surf); border-bottom:1px solid var(--border); }
+.tab  {
+  flex:1; padding:.7rem .5rem; text-align:center; font-family:var(--font); font-size:.65rem;
+  font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);
+  background:none; border:none; cursor:pointer; border-bottom:2px solid transparent;
+  transition:all .15s; touch-action:manipulation; position:relative;
+}
+.tab.on { color:var(--gold); border-bottom-color:var(--gold); }
+.tab .badge {
+  position:absolute; top:6px; right:calc(50% - 18px); background:var(--red);
+  color:#fff; font-size:.5rem; font-weight:700; border-radius:99px;
+  padding:.1rem .3rem; min-width:16px; text-align:center; display:none;
+}
+.tab .badge.show { display:block; }
+
+.tab-panel { display:none; flex:1; overflow-y:auto; padding:1rem; padding-bottom:2rem; }
+.tab-panel.on { display:block; }
+
+/* ── Section headers ───────────────────────────── */
+.sec-hd { display:flex; align-items:center; justify-content:space-between; margin-bottom:.875rem; }
+.sec-hd h2 { font-size:.95rem; font-weight:700; color:var(--text); }
+
+/* ── Event cards ───────────────────────────────── */
+.ev-card {
+  background:var(--surf); border:1px solid var(--border); border-radius:4px;
+  padding:.875rem 1rem; margin-bottom:.5rem;
+}
+.ev-card.is-active { border-left:3px solid var(--green); }
+.ev-card-top { display:flex; align-items:flex-start; justify-content:space-between; gap:.5rem; margin-bottom:.6rem; }
+.ev-card-name { font-size:1rem; font-weight:700; color:var(--text); }
+.ev-card-date { font-size:.7rem; color:var(--muted); margin-top:.2rem; }
+.ev-card-badges { display:flex; gap:.3rem; flex-shrink:0; flex-wrap:wrap; justify-content:flex-end; }
+.ev-badge { font-size:.55rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; padding:.15rem .4rem; border-radius:2px; }
+.b-active { background:#052010; color:var(--green); border:1px solid var(--green-bd); }
+.b-pub    { background:#1a1000; color:var(--gold); border:1px solid var(--gold-dim); }
+.ev-card-actions { display:flex; gap:.35rem; flex-wrap:wrap; }
+
+/* ── New event form ────────────────────────────── */
+.new-ev-form {
+  background:var(--surf); border:1px solid var(--border); border-radius:4px;
+  padding:1rem; margin-bottom:1rem; display:none;
+}
+.new-ev-form.open { display:block; }
+.fld { margin-bottom:.875rem; }
+.fld label { display:block; font-size:.6rem; letter-spacing:.15em; text-transform:uppercase; color:var(--muted); font-weight:600; margin-bottom:.35rem; }
+.fld input, .fld textarea {
+  width:100%; background:var(--surf2); border:1px solid var(--border); color:var(--text);
+  font-family:var(--font); font-size:.9rem; padding:.7rem .8rem; outline:none;
+  border-radius:2px; transition:border-color .2s;
+}
+.fld input:focus, .fld textarea:focus { border-color:var(--gold); }
+.fld textarea { resize:vertical; min-height:120px; font-size:.8rem; line-height:1.6; }
+.fld .hint { font-size:.65rem; color:var(--muted); margin-top:.3rem; }
+.fld .hint strong { color:#aaa; }
+.row2 { display:grid; grid-template-columns:1fr 1fr; gap:.75rem; }
+.form-actions { display:flex; gap:.5rem; margin-top:.5rem; }
+
+/* ── Moderation grid ───────────────────────────── */
+.mod-event-sel { margin-bottom:1rem; }
+.mod-event-sel select {
+  width:100%; background:var(--surf2); border:1px solid var(--border); color:var(--text);
+  font-family:var(--font); font-size:.875rem; padding:.65rem .8rem; outline:none;
+  border-radius:2px; transition:border-color .2s;
+}
+.mod-event-sel select:focus { border-color:var(--gold); }
+.mod-count { font-size:.75rem; color:var(--muted); margin-bottom:.75rem; }
+
+.photo-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:.5rem; }
+.photo-card { background:var(--surf); border:1px solid var(--border); border-radius:4px; overflow:hidden; }
+.photo-thumb { width:100%; aspect-ratio:1; object-fit:cover; display:block; background:var(--surf2); }
+.photo-info  { padding:.5rem .6rem; }
+.photo-guest { font-size:.8rem; font-weight:600; color:var(--text); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.photo-time  { font-size:.6rem; color:var(--muted); margin-bottom:.45rem; }
+.photo-acts  { display:flex; gap:.3rem; }
+.photo-acts .btn { flex:1; min-height:36px; font-size:.65rem; padding:.4rem; }
+
+.empty-state { text-align:center; color:var(--muted); font-size:.85rem; padding:3rem 1rem; line-height:1.6; }
+
+/* ── Gallery ───────────────────────────────────── */
+.gal-sel { margin-bottom:1rem; }
+.gal-sel select {
+  width:100%; background:var(--surf2); border:1px solid var(--border); color:var(--text);
+  font-family:var(--font); font-size:.875rem; padding:.65rem .8rem; outline:none;
+  border-radius:2px;
+}
+.gal-link-box {
+  background:var(--surf2); border:1px solid var(--border); border-radius:4px;
+  padding:.75rem 1rem; margin-bottom:1rem; display:none;
+}
+.gal-link-box.show { display:block; }
+.gal-link-label { font-size:.6rem; letter-spacing:.15em; text-transform:uppercase; color:var(--muted); font-weight:600; margin-bottom:.4rem; }
+.gal-link-url { font-size:.75rem; color:var(--gold); word-break:break-all; margin-bottom:.5rem; }
+.gal-link-acts { display:flex; gap:.4rem; }
+
+/* ── Lightbox ──────────────────────────────────── */
+.lightbox { display:none; position:fixed; inset:0; background:rgba(0,0,0,.92); z-index:999; align-items:center; justify-content:center; padding:1rem; }
+.lightbox.open { display:flex; }
+.lightbox img { max-width:100%; max-height:90vh; object-fit:contain; border-radius:4px; }
+.lb-close { position:fixed; top:1rem; right:1rem; background:rgba(0,0,0,.6); border:1px solid var(--border); color:var(--text); font-size:1.5rem; width:40px; height:40px; border-radius:50%; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login" class="screen active">
+  <p class="pw-eyebrow">Admin Access</p>
+  <h1 class="pw-title">FREAK<br>HOUSE</h1>
+  <div class="pw-rule"></div>
+  <p class="pw-sub">Dashboard</p>
+  <form class="login-form" onsubmit="doLogin(event)">
+    <input id="l-email" type="email"    class="login-input" placeholder="Admin email"    autocomplete="email" autocorrect="off" autocapitalize="off">
+    <input id="l-pw"    type="password" class="login-input" placeholder="Password" autocomplete="current-password">
+    <p id="l-err" class="login-error"></p>
+    <button id="l-btn" type="submit" class="btn btn-gold btn-full">Sign In</button>
+  </form>
+</div>
+
+<!-- LOADING -->
+<div id="loading" class="screen">
+  <div class="spinner"></div>
+  <p class="loading-txt">Loading…</p>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="screen">
+  <div class="dash-hd">
+    <h1>FreakHouse Admin</h1>
+    <div style="display:flex;align-items:center;gap:.75rem;">
+      <span class="dash-user" id="dash-user"></span>
+      <button class="so-btn" onclick="doSignOut()">Sign Out</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" id="tab-events" onclick="switchTab('events')">Events</button>
+    <button class="tab"    id="tab-mod"    onclick="switchTab('mod')">
+      Moderation
+      <span class="badge" id="mod-badge">0</span>
+    </button>
+    <button class="tab"    id="tab-gal"    onclick="switchTab('gal')">Gallery</button>
+  </div>
+
+  <!-- EVENTS TAB -->
+  <div class="tab-panel on" id="panel-events">
+    <div class="sec-hd">
+      <h2>Events</h2>
+      <button class="btn btn-gold btn-sm" onclick="toggleNewForm()">+ New Event</button>
+    </div>
+
+    <div class="new-ev-form" id="new-ev-form">
+      <div class="row2">
+        <div class="fld"><label>Party Name</label><input id="ne-name" type="text" placeholder="Saturday Night"></div>
+        <div class="fld"><label>Date</label><input id="ne-date" type="date"></div>
+      </div>
+      <div class="fld"><label>Max Headcount</label><input id="ne-cap" type="number" placeholder="200" inputmode="numeric"></div>
+      <div class="fld">
+        <label>Guest List <span style="font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></label>
+        <textarea id="ne-list" placeholder="John Doe&#10;Jane Smith X&#10;Mike Johnson | VIP"></textarea>
+        <p class="hint">One per line. Append <strong>X</strong> for DNA. Add <strong>| note</strong> for notes.</p>
+      </div>
+      <div class="form-actions">
+        <button class="btn btn-ghost btn-sm" onclick="toggleNewForm()">Cancel</button>
+        <button id="ne-btn" class="btn btn-gold" style="flex:1" onclick="createEvent()">Create Event</button>
+      </div>
+    </div>
+
+    <div id="ev-list"></div>
+  </div>
+
+  <!-- MODERATION TAB -->
+  <div class="tab-panel" id="panel-mod">
+    <div class="mod-event-sel">
+      <select id="mod-ev-sel" onchange="loadMod(this.value)">
+        <option value="">Select an event…</option>
+      </select>
+    </div>
+    <p class="mod-count" id="mod-count"></p>
+    <div class="photo-grid" id="mod-grid"></div>
+  </div>
+
+  <!-- GALLERY TAB -->
+  <div class="tab-panel" id="panel-gal">
+    <div class="gal-sel">
+      <select id="gal-ev-sel" onchange="loadGallery(this.value)">
+        <option value="">Select an event…</option>
+      </select>
+    </div>
+    <div class="gal-link-box" id="gal-link-box">
+      <div class="gal-link-label">Public Gallery Link</div>
+      <div class="gal-link-url" id="gal-link-url"></div>
+      <div class="gal-link-acts">
+        <button class="btn btn-ghost btn-sm" onclick="copyGalLink()">Copy Link</button>
+        <button class="btn btn-red btn-sm"   onclick="unpublishGal()">Unpublish</button>
+      </div>
+    </div>
+    <div id="gal-pub-btn-wrap" style="margin-bottom:1rem;display:none;">
+      <button class="btn btn-gold btn-full" onclick="publishGal()">Publish Gallery & Get Link</button>
+    </div>
+    <div class="photo-grid" id="gal-grid"></div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <button class="lb-close" onclick="closeLightbox()">×</button>
+  <img id="lb-img" src="">
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+let allEvents   = [];
+let unsubEvents = null;
+let unsubMod    = null;
+let modEventId  = null;
+let galEventId  = null;
+let currentTab  = 'events';
+
+// ── Auth ──────────────────────────────────────────
+auth.onAuthStateChanged(user => {
+  if (user) {
+    document.getElementById('dash-user').textContent = user.email;
+    show('loading');
+    startEventsListener();
+  } else {
+    stopAll();
+    show('login');
+  }
+});
+
+async function doLogin(e) {
+  e.preventDefault();
+  const email = document.getElementById('l-email').value.trim();
+  const pw    = document.getElementById('l-pw').value;
+  const err   = document.getElementById('l-err');
+  const btn   = document.getElementById('l-btn');
+  btn.disabled = true; btn.textContent = 'Signing in…'; err.textContent = '';
+  try {
+    await auth.signInWithEmailAndPassword(email, pw);
+  } catch {
+    err.textContent = 'Invalid email or password.';
+    btn.disabled = false; btn.textContent = 'Sign In';
+    document.getElementById('l-pw').value = '';
+    const inp = document.getElementById('l-pw');
+    inp.classList.add('shake');
+    setTimeout(() => inp.classList.remove('shake'), 400);
+  }
+}
+
+async function doSignOut() { await auth.signOut(); }
+
+function stopAll() {
+  if (unsubEvents) { unsubEvents(); unsubEvents = null; }
+  if (unsubMod)    { unsubMod();    unsubMod    = null; }
+  allEvents = [];
+}
+
+// ── Events listener ───────────────────────────────
+function startEventsListener() {
+  let first = true;
+  unsubEvents = db.collection('events').orderBy('createdAt','desc').onSnapshot(snap => {
+    allEvents = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderEventsList();
+    populateEventSelects();
+    if (first) { first = false; show('dashboard'); }
+  }, () => show('dashboard'));
+}
+
+function renderEventsList() {
+  const el = document.getElementById('ev-list');
+  if (!el) return;
+  if (!allEvents.length) {
+    el.innerHTML = `<div class="empty-state">No events yet.<br>Create one above.</div>`;
+    return;
+  }
+  el.innerHTML = allEvents.map(ev => `
+<div class="ev-card${ev.isActive ? ' is-active' : ''}">
+  <div class="ev-card-top">
+    <div>
+      <div class="ev-card-name">${esc(ev.name || 'Untitled')}</div>
+      <div class="ev-card-date">${esc(ev.dateDisplay || ev.date || '')}</div>
+    </div>
+    <div class="ev-card-badges">
+      ${ev.isActive  ? `<span class="ev-badge b-active">Active</span>`    : ''}
+      ${ev.published ? `<span class="ev-badge b-pub">Published</span>` : ''}
+    </div>
+  </div>
+  <div class="ev-card-actions">
+    ${!ev.isActive ? `<button class="btn btn-ghost btn-sm" onclick="setActive('${ev.id}')">Set Active</button>` : `<button class="btn btn-sm" style="background:var(--green-bg);color:var(--green);border:1px solid var(--green-bd);" onclick="setActive('${ev.id}')">✓ Active</button>`}
+    <button class="btn btn-ghost btn-sm" onclick="switchToMod('${ev.id}')">Moderate</button>
+    <button class="btn btn-ghost btn-sm" onclick="switchToGal('${ev.id}')">Gallery</button>
+    <button class="btn btn-red btn-sm"   onclick="deleteEv('${ev.id}','${esc(ev.name||'this event')}')">Delete</button>
+  </div>
+</div>`).join('');
+}
+
+function populateEventSelects() {
+  const opts = `<option value="">Select an event…</option>` +
+    allEvents.map(ev => `<option value="${ev.id}">${esc(ev.name||'Untitled')} — ${esc(ev.dateDisplay||ev.date||'')}</option>`).join('');
+  document.getElementById('mod-ev-sel').innerHTML = opts;
+  document.getElementById('gal-ev-sel').innerHTML = opts;
+  if (modEventId) document.getElementById('mod-ev-sel').value = modEventId;
+  if (galEventId) document.getElementById('gal-ev-sel').value = galEventId;
+}
+
+// ── New event form ────────────────────────────────
+function toggleNewForm() {
+  const f = document.getElementById('new-ev-form');
+  f.classList.toggle('open');
+  if (f.classList.contains('open')) {
+    document.getElementById('ne-date').value = new Date().toISOString().split('T')[0];
+    document.getElementById('ne-name').focus();
+  }
+}
+
+async function createEvent() {
+  const name = document.getElementById('ne-name').value.trim();
+  if (!name) { document.getElementById('ne-name').focus(); return; }
+  const dateV = document.getElementById('ne-date').value;
+  const capV  = parseInt(document.getElementById('ne-cap').value) || 0;
+  const raw   = document.getElementById('ne-list').value.trim();
+  let dateDisplay = '';
+  if (dateV) dateDisplay = new Date(dateV+'T12:00:00').toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
+  const btn = document.getElementById('ne-btn');
+  btn.disabled = true; btn.textContent = 'Creating…';
+  try {
+    const evRef = db.collection('events').doc();
+    const guests = raw ? parseGuests(raw) : [];
+    await evRef.set({
+      name, date: dateV, dateDisplay, maxCapacity: capV,
+      nolCount: 0, guestCount: guests.length, isActive: false, published: false,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    if (guests.length) {
+      for (const ch of chunks(guests, 499)) {
+        const b = db.batch(); ch.forEach(g => b.set(evRef.collection('guests').doc(), g)); await b.commit();
+      }
+    }
+    toggleNewForm();
+    document.getElementById('ne-name').value = '';
+    document.getElementById('ne-list').value = '';
+    document.getElementById('ne-cap').value  = '';
+  } catch(e) { alert('Failed to create event.'); console.error(e); }
+  finally { btn.disabled = false; btn.textContent = 'Create Event'; }
+}
+
+function parseGuests(text) {
+  return text.split('\n').map(l=>l.trim()).filter(Boolean).map((line,i)=>{
+    const [np,...rest] = line.split('|');
+    const note = rest.join('|').trim();
+    const words = np.trim().split(/\s+/);
+    const dna   = words[words.length-1].toUpperCase()==='X';
+    const name  = dna ? words.slice(0,-1).join(' ') : words.join(' ');
+    return { order:i, name:name||`Guest ${i+1}`, note, dna, status:'pending', plus1:false, ts:null };
+  });
+}
+
+function chunks(arr, size) {
+  const out=[]; for(let i=0;i<arr.length;i+=size) out.push(arr.slice(i,i+size)); return out;
+}
+
+// ── Event actions ─────────────────────────────────
+async function setActive(eventId) {
+  try {
+    const snap = await db.collection('events').where('isActive','==',true).get();
+    const b = db.batch();
+    snap.forEach(d => b.update(d.ref, { isActive: false }));
+    await b.commit();
+    await db.collection('events').doc(eventId).update({ isActive: true });
+  } catch(e) { alert('Failed.'); console.error(e); }
+}
+
+async function deleteEv(eventId, name) {
+  if (!confirm(`Delete "${name}" and all guest and photo data?\n\nThis cannot be undone.`)) return;
+  try {
+    // Delete guests
+    const guests = await db.collection('events').doc(eventId).collection('guests').get();
+    for (const ch of chunks(guests.docs, 499)) {
+      const b = db.batch(); ch.forEach(d => b.delete(d.ref)); await b.commit();
+    }
+    // Delete photos (and Storage files)
+    const photos = await db.collection('events').doc(eventId).collection('photos').get();
+    for (const d of photos.docs) {
+      const { storagePath } = d.data();
+      if (storagePath) try { await storage.ref(storagePath).delete(); } catch {}
+      await d.ref.delete();
+    }
+    // Delete gallery token if published
+    const ev = allEvents.find(e => e.id === eventId);
+    if (ev?.publishToken) try { await db.collection('galleries').doc(ev.publishToken).delete(); } catch {}
+    await db.collection('events').doc(eventId).delete();
+  } catch(e) { alert('Failed to delete event.'); console.error(e); }
+}
+
+// ── Tab switching ─────────────────────────────────
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('on'));
+  document.getElementById(`tab-${tab}`).classList.add('on');
+  document.getElementById(`panel-${tab}`).classList.add('on');
+}
+
+function switchToMod(eventId) {
+  switchTab('mod');
+  document.getElementById('mod-ev-sel').value = eventId;
+  loadMod(eventId);
+}
+
+function switchToGal(eventId) {
+  switchTab('gal');
+  document.getElementById('gal-ev-sel').value = eventId;
+  loadGallery(eventId);
+}
+
+// ── Moderation ────────────────────────────────────
+function loadMod(eventId) {
+  modEventId = eventId;
+  if (unsubMod) { unsubMod(); unsubMod = null; }
+  const grid  = document.getElementById('mod-grid');
+  const count = document.getElementById('mod-count');
+  if (!eventId) { grid.innerHTML = ''; count.textContent = ''; return; }
+
+  unsubMod = db.collection('events').doc(eventId).collection('photos')
+    .where('status','==','pending')
+    .onSnapshot(snap => {
+      const photos = snap.docs.map(d=>({id:d.id,...d.data()}))
+        .sort((a,b)=>(b.uploadedAt?.toMillis?.()||0)-(a.uploadedAt?.toMillis?.()||0));
+      const n = photos.length;
+      count.textContent = n ? `${n} pending photo${n>1?'s':''}` : 'No pending photos';
+      // Update badge
+      const badge = document.getElementById('mod-badge');
+      badge.textContent = n > 0 ? n : '';
+      badge.classList.toggle('show', n > 0);
+      renderModGrid(photos, eventId);
+    });
+}
+
+function renderModGrid(photos, eventId) {
+  const grid = document.getElementById('mod-grid');
+  if (!photos.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">All caught up — no pending photos.</div>`;
+    return;
+  }
+  grid.innerHTML = photos.map(p => {
+    const t = p.uploadedAt?.toDate?.()?.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'}) || '';
+    return `
+<div class="photo-card" id="pc-${p.id}">
+  <img class="photo-thumb" src="${esc(p.downloadUrl)}" loading="lazy" onclick="openLightbox('${esc(p.downloadUrl)}')">
+  <div class="photo-info">
+    <div class="photo-guest">${esc(p.guestName||'Anonymous')}</div>
+    <div class="photo-time">${t}</div>
+    <div class="photo-acts">
+      <button class="btn btn-green" onclick="approvePhoto('${eventId}','${p.id}')">✓ Approve</button>
+      <button class="btn btn-red"   onclick="rejectPhoto('${eventId}','${p.id}','${esc(p.storagePath||'')}')">✕ Reject</button>
+    </div>
+  </div>
+</div>`;
+  }).join('');
+}
+
+async function approvePhoto(eventId, photoId) {
+  await db.collection('events').doc(eventId).collection('photos').doc(photoId).update({
+    status: 'approved',
+    moderatedAt: firebase.firestore.FieldValue.serverTimestamp()
+  });
+}
+
+async function rejectPhoto(eventId, photoId, storagePath) {
+  if (storagePath) try { await storage.ref(storagePath).delete(); } catch {}
+  await db.collection('events').doc(eventId).collection('photos').doc(photoId).delete();
+}
+
+// ── Gallery ───────────────────────────────────────
+async function loadGallery(eventId) {
+  galEventId = eventId;
+  const grid = document.getElementById('gal-grid');
+  const box  = document.getElementById('gal-link-box');
+  const pubWrap = document.getElementById('gal-pub-btn-wrap');
+  box.classList.remove('show');
+  pubWrap.style.display = 'none';
+  if (!eventId) { grid.innerHTML = ''; return; }
+
+  const ev = allEvents.find(e => e.id === eventId);
+  if (ev) {
+    if (ev.published && ev.publishToken) {
+      const url = galUrl(ev.publishToken);
+      document.getElementById('gal-link-url').textContent = url;
+      box.classList.add('show');
+    } else {
+      pubWrap.style.display = 'block';
+    }
+  }
+
+  grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><div class="spinner" style="margin:0 auto .5rem"></div></div>`;
+  const snap = await db.collection('events').doc(eventId).collection('photos')
+    .where('status','==','approved').get();
+  const photos = snap.docs.map(d=>({id:d.id,...d.data()}))
+    .sort((a,b)=>(b.moderatedAt?.toMillis?.()||0)-(a.moderatedAt?.toMillis?.()||0));
+
+  if (!photos.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">No approved photos yet.</div>`;
+    return;
+  }
+  grid.innerHTML = photos.map(p => `
+<div class="photo-card">
+  <img class="photo-thumb" src="${esc(p.downloadUrl)}" loading="lazy" onclick="openLightbox('${esc(p.downloadUrl)}')">
+  <div class="photo-info">
+    <div class="photo-guest">${esc(p.guestName||'Anonymous')}</div>
+  </div>
+</div>`).join('');
+}
+
+async function publishGal() {
+  if (!galEventId) return;
+  const token = Math.random().toString(36).slice(2,14);
+  await Promise.all([
+    db.collection('events').doc(galEventId).update({ published: true, publishToken: token }),
+    db.collection('galleries').doc(token).set({ eventId: galEventId, publishedAt: firebase.firestore.FieldValue.serverTimestamp() })
+  ]);
+  const url = galUrl(token);
+  document.getElementById('gal-link-url').textContent = url;
+  document.getElementById('gal-link-box').classList.add('show');
+  document.getElementById('gal-pub-btn-wrap').style.display = 'none';
+}
+
+async function unpublishGal() {
+  if (!galEventId) return;
+  const ev = allEvents.find(e => e.id === galEventId);
+  if (ev?.publishToken) try { await db.collection('galleries').doc(ev.publishToken).delete(); } catch {}
+  await db.collection('events').doc(galEventId).update({ published: false, publishToken: null });
+  document.getElementById('gal-link-box').classList.remove('show');
+  document.getElementById('gal-pub-btn-wrap').style.display = 'block';
+}
+
+function copyGalLink() {
+  const url = document.getElementById('gal-link-url').textContent;
+  navigator.clipboard.writeText(url).then(() => alert('Link copied!')).catch(() => prompt('Copy this link:', url));
+}
+
+function galUrl(token) {
+  return window.location.href.replace(/admin\.html.*$/, '') + `gallery.html?token=${token}`;
+}
+
+// ── Lightbox ──────────────────────────────────────
+function openLightbox(src) {
+  document.getElementById('lb-img').src = src;
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.getElementById('lb-img').src = '';
+}
+
+// ── Helpers ───────────────────────────────────────
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function show(id) { document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); document.getElementById(id).classList.add('active'); window.scrollTo(0,0); }
+</script>
+</body>
+</html>

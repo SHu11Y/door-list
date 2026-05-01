@@ -468,24 +468,9 @@ body { background: var(--bg); color: var(--text); font-family: var(--font); min-
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
 
 <script>
-// ════════════════════════════════════════════════════
-//  FIREBASE CONFIG
-const firebaseConfig = {
-  apiKey:            "AIzaSyAvjrRwEXYrPNvJmH_JBh_BCBAV4IhFevE",
-  authDomain:        "fhpartty.firebaseapp.com",
-  projectId:         "fhpartty",
-  storageBucket:     "fhpartty.firebasestorage.app",
-  messagingSenderId: "59717956859",
-  appId:             "1:59717956859:web:ebfc22e08bc17695872c5e"
-};
-// ════════════════════════════════════════════════════
-
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db   = firebase.firestore();
-
 // Firestore helpers
 const eventsCol    = ()     => db.collection('events');
 const eventRef     = id     => db.collection('events').doc(id);

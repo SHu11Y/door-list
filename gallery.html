@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Gallery — The FreakHouse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+:root {
+  --bg: #080808; --surf: #141414; --surf2: #1e1e1e; --border: #2a2a2a;
+  --gold: #D4A017; --text: #f0f0f0; --muted: #666;
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+body { background: var(--bg); color: var(--text); font-family: var(--font); min-height: 100vh; -webkit-font-smoothing: antialiased; }
+
+/* Header */
+.header {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--bg); border-bottom: 1px solid var(--border);
+  padding: 1rem 1.25rem .75rem; text-align: center;
+}
+.logo { font-size: 1.6rem; font-weight: 900; letter-spacing: .06em; color: var(--gold); text-transform: uppercase; line-height: 1; }
+.event-lbl { font-size: .65rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin-top: .2rem; }
+
+/* Status screens */
+.status { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 60vh; text-align: center; padding: 2rem; }
+.status-icon { font-size: 3rem; margin-bottom: 1rem; }
+.status-title { font-size: 1.1rem; font-weight: 700; color: var(--muted); margin-bottom: .4rem; }
+.status-sub { font-size: .8rem; color: var(--muted); }
+.spinner { width: 28px; height: 28px; border: 2px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: spin .8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Gallery grid */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  padding: .5rem 0;
+}
+.photo-tile {
+  position: relative; aspect-ratio: 1; overflow: hidden;
+  cursor: pointer; background: var(--surf);
+}
+.photo-tile img {
+  width: 100%; height: 100%; object-fit: cover;
+  display: block; transition: opacity .2s;
+}
+.photo-tile:active img { opacity: .8; }
+.photo-tile .tile-name {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  background: linear-gradient(transparent, rgba(0,0,0,.75));
+  padding: .75rem .4rem .3rem;
+  font-size: .6rem; color: rgba(255,255,255,.8); font-weight: 600;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  opacity: 0; transition: opacity .2s;
+}
+.photo-tile:hover .tile-name { opacity: 1; }
+
+/* Photo count */
+.count-bar { padding: .75rem 1.25rem .25rem; font-size: .7rem; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; }
+
+/* Empty state */
+.empty { padding: 3rem 2rem; text-align: center; color: var(--muted); font-size: .85rem; }
+
+/* Lightbox */
+.lightbox {
+  display: none; position: fixed; inset: 0; z-index: 100;
+  background: rgba(0,0,0,.96); align-items: center; justify-content: center;
+  flex-direction: column;
+}
+.lightbox.open { display: flex; }
+.lb-img { max-width: 100vw; max-height: 85vh; object-fit: contain; border-radius: 4px; }
+.lb-meta {
+  margin-top: .75rem; font-size: .75rem; color: var(--muted);
+  letter-spacing: .05em;
+}
+.lb-close {
+  position: absolute; top: 1rem; right: 1rem;
+  background: rgba(255,255,255,.1); border: none; color: var(--text);
+  font-size: 1.25rem; width: 40px; height: 40px; border-radius: 50%;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  touch-action: manipulation;
+}
+.lb-close:active { background: rgba(255,255,255,.2); }
+.lb-nav {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  background: rgba(255,255,255,.08); border: none; color: var(--text);
+  font-size: 1.5rem; width: 44px; height: 64px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  touch-action: manipulation; border-radius: 4px;
+}
+.lb-nav:active { background: rgba(255,255,255,.15); }
+.lb-prev { left: .5rem; }
+.lb-next { right: .5rem; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo">The FreakHouse</div>
+  <div class="event-lbl" id="event-lbl">Gallery</div>
+</div>
+
+<div id="status-loading" class="status">
+  <div class="spinner"></div>
+</div>
+
+<div id="status-invalid" class="status" style="display:none">
+  <div class="status-icon">🔒</div>
+  <p class="status-title">Gallery Not Available</p>
+  <p class="status-sub">This link may be expired or invalid.</p>
+</div>
+
+<div id="status-empty" class="status" style="display:none">
+  <div class="status-icon">📷</div>
+  <p class="status-title">No Photos Yet</p>
+  <p class="status-sub">Photos will appear here once approved.</p>
+</div>
+
+<div id="gallery-view" style="display:none">
+  <div class="count-bar" id="count-bar"></div>
+  <div class="gallery-grid" id="grid"></div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <button class="lb-close" onclick="closeLb()">✕</button>
+  <button class="lb-nav lb-prev" onclick="navLb(-1)">‹</button>
+  <img class="lb-img" id="lb-img" src="" alt="">
+  <div class="lb-meta" id="lb-meta"></div>
+  <button class="lb-nav lb-next" onclick="navLb(1)">›</button>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+let photos = [];
+let lbIdx  = 0;
+
+async function init() {
+  const params = new URLSearchParams(window.location.search);
+  const token  = params.get('token');
+
+  if (!token) { show('status-invalid'); return; }
+
+  try {
+    // Look up token → eventId
+    const galSnap = await db.collection('galleries').doc(token).get();
+    if (!galSnap.exists) { show('status-invalid'); return; }
+
+    const { eventId } = galSnap.data();
+
+    // Get event name
+    const evSnap = await db.collection('events').doc(eventId).get();
+    if (evSnap.exists) {
+      const ev = evSnap.data();
+      document.getElementById('event-lbl').textContent =
+        (ev.name || 'Gallery') + (ev.dateDisplay ? ' · ' + ev.dateDisplay : '');
+    }
+
+    // Load approved photos (client-side sort to avoid composite index)
+    const pSnap = await db.collection('events').doc(eventId)
+      .collection('photos').where('status','==','approved').get();
+
+    if (pSnap.empty) { show('status-empty'); return; }
+
+    photos = pSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+    // Sort by uploadedAt ascending
+    photos.sort((a,b) => {
+      const ta = a.uploadedAt ? a.uploadedAt.toMillis() : 0;
+      const tb = b.uploadedAt ? b.uploadedAt.toMillis() : 0;
+      return ta - tb;
+    });
+
+    renderGallery();
+    show('gallery-view');
+  } catch(e) {
+    console.error(e);
+    show('status-invalid');
+  }
+}
+
+function renderGallery() {
+  const grid = document.getElementById('grid');
+  const n = photos.length;
+  document.getElementById('count-bar').textContent = `${n} photo${n !== 1 ? 's' : ''}`;
+
+  grid.innerHTML = photos.map((p,i) => `
+    <div class="photo-tile" onclick="openLb(${i})">
+      <img src="${esc(p.downloadUrl)}" loading="lazy" alt="${esc(p.guestName || '')}">
+      ${p.guestName ? `<div class="tile-name">${esc(p.guestName)}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+function esc(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── Lightbox ──────────────────────────────────────
+function openLb(idx) {
+  lbIdx = idx;
+  updateLb();
+  document.getElementById('lightbox').classList.add('open');
+}
+
+function closeLb() {
+  document.getElementById('lightbox').classList.remove('open');
+}
+
+function navLb(dir) {
+  lbIdx = (lbIdx + dir + photos.length) % photos.length;
+  updateLb();
+}
+
+function updateLb() {
+  const p = photos[lbIdx];
+  document.getElementById('lb-img').src = p.downloadUrl;
+  document.getElementById('lb-meta').textContent =
+    (p.guestName ? p.guestName + ' · ' : '') + `${lbIdx + 1} / ${photos.length}`;
+}
+
+// Swipe support
+let tsX = 0;
+document.getElementById('lightbox').addEventListener('touchstart', e => { tsX = e.touches[0].clientX; }, { passive: true });
+document.getElementById('lightbox').addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - tsX;
+  if (Math.abs(dx) > 50) navLb(dx < 0 ? 1 : -1);
+});
+
+// Keyboard nav
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('lightbox').classList.contains('open')) return;
+  if (e.key === 'ArrowRight') navLb(1);
+  if (e.key === 'ArrowLeft')  navLb(-1);
+  if (e.key === 'Escape')     closeLb();
+});
+
+function show(id) {
+  ['status-loading','status-invalid','status-empty','gallery-view'].forEach(s => {
+    document.getElementById(s).style.display = 'none';
+  });
+  document.getElementById(id).style.display = id === 'gallery-view' ? 'block' : 'flex';
+}
+
+init();
+</script>
+</body>
+</html>

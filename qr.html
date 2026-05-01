@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Upload QR — The FreakHouse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #080808; --surf: #141414; --border: #2a2a2a;
+  --gold: #D4A017; --text: #f0f0f0; --muted: #666;
+  --font: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+body {
+  background: var(--bg); color: var(--text); font-family: var(--font);
+  min-height: 100vh; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; padding: 2rem;
+  text-align: center; -webkit-font-smoothing: antialiased;
+}
+.logo { font-size: 2.5rem; font-weight: 900; letter-spacing: .06em; color: var(--gold); text-transform: uppercase; line-height: 1; margin-bottom: .3rem; }
+.event-name { font-size: .75rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin-bottom: 2.5rem; }
+.qr-wrap {
+  background: #fff; padding: 1.25rem; border-radius: 12px;
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-bottom: 2rem; box-shadow: 0 0 60px rgba(212,160,23,.15);
+}
+#qrcode canvas, #qrcode img { display: block; }
+.cta { font-size: 1.4rem; font-weight: 900; color: var(--text); margin-bottom: .4rem; letter-spacing: -.01em; }
+.sub { font-size: .85rem; color: var(--muted); margin-bottom: 2rem; line-height: 1.5; }
+.url-pill {
+  background: var(--surf); border: 1px solid var(--border); border-radius: 6px;
+  padding: .65rem 1rem; font-size: .75rem; color: var(--muted);
+  word-break: break-all; max-width: 340px; line-height: 1.5;
+  margin-bottom: 1.5rem;
+}
+.copy-btn {
+  background: var(--gold); color: #000; border: none; border-radius: 4px;
+  font-family: var(--font); font-weight: 700; font-size: .8rem;
+  letter-spacing: .08em; text-transform: uppercase;
+  padding: .6rem 1.5rem; cursor: pointer; transition: opacity .15s;
+}
+.copy-btn:active { opacity: .8; }
+.spinner { width: 28px; height: 28px; border: 2px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: spin .8s linear infinite; margin-bottom: .75rem; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.no-ev { color: var(--muted); font-size: 1rem; }
+</style>
+</head>
+<body>
+
+<div id="loading">
+  <div class="spinner"></div>
+</div>
+
+<div id="main" style="display:none; flex-direction:column; align-items:center; width:100%; max-width:400px;">
+  <div class="logo">The FreakHouse</div>
+  <div class="event-name" id="event-name">Loading…</div>
+  <div class="qr-wrap">
+    <div id="qrcode"></div>
+  </div>
+  <p class="cta">Scan to Upload Photos</p>
+  <p class="sub">Point your camera at the QR code<br>to submit photos from the night.</p>
+  <div class="url-pill" id="url-display"></div>
+  <button class="copy-btn" onclick="copyUrl()">Copy Link</button>
+</div>
+
+<p class="no-ev" id="no-event" style="display:none">No active event right now.</p>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+let uploadUrl = '';
+
+async function init() {
+  try {
+    let snap = await db.collection('events').where('isActive','==',true).limit(1).get();
+    if (snap.empty) {
+      const today = new Date().toISOString().split('T')[0];
+      snap = await db.collection('events').where('date','==',today).limit(1).get();
+    }
+    if (snap.empty) {
+      document.getElementById('loading').style.display = 'none';
+      document.getElementById('no-event').style.display = 'block';
+      return;
+    }
+
+    const ev = snap.docs[0].data();
+    const base = window.location.href.replace(/qr\.html.*$/, '');
+    uploadUrl = base + 'photos.html';
+
+    document.getElementById('event-name').textContent =
+      (ev.name || 'Tonight') + (ev.dateDisplay ? ' · ' + ev.dateDisplay : '');
+    document.getElementById('url-display').textContent = uploadUrl;
+
+    new QRCode(document.getElementById('qrcode'), {
+      text: uploadUrl,
+      width: 240,
+      height: 240,
+      colorDark: '#000000',
+      colorLight: '#ffffff',
+      correctLevel: QRCode.CorrectLevel.M
+    });
+
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('main').style.display = 'flex';
+  } catch(e) {
+    console.error(e);
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('no-event').style.display = 'block';
+  }
+}
+
+function copyUrl() {
+  navigator.clipboard.writeText(uploadUrl).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = 'Copied!';
+    setTimeout(() => { btn.textContent = 'Copy Link'; }, 2000);
+  });
+}
+
+init();
+</script>
+</body>
+</html>
