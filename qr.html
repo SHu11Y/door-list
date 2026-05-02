@@ -20,7 +20,7 @@ body {
   text-align: center; -webkit-font-smoothing: antialiased;
 }
 .logo { font-size: 2.5rem; font-weight: 900; letter-spacing: .06em; color: var(--gold); text-transform: uppercase; line-height: 1; margin-bottom: .3rem; }
-.event-name { font-size: .75rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin-bottom: 2.5rem; }
+.event-name { font-size: .75rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); margin-bottom: 2.5rem; min-height: 1rem; }
 .qr-wrap {
   background: #fff; padding: 1.25rem; border-radius: 12px;
   display: inline-flex; align-items: center; justify-content: center;
@@ -42,68 +42,48 @@ body {
   padding: .6rem 1.5rem; cursor: pointer; transition: opacity .15s;
 }
 .copy-btn:active { opacity: .8; }
-.spinner { width: 28px; height: 28px; border: 2px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: spin .8s linear infinite; margin-bottom: .75rem; }
-@keyframes spin { to { transform: rotate(360deg); } }
-.no-ev { color: var(--muted); font-size: 1rem; }
 </style>
 </head>
 <body>
 
-<div id="loading">
-  <div class="spinner"></div>
+<div class="logo">The FreakHouse</div>
+<div class="event-name" id="event-name"></div>
+
+<div class="qr-wrap">
+  <img class="qr-img" id="qr-img" src="" alt="QR Code">
 </div>
 
-<div id="main" style="display:none; flex-direction:column; align-items:center; width:100%; max-width:400px;">
-  <div class="logo">The FreakHouse</div>
-  <div class="event-name" id="event-name">Loading…</div>
-  <div class="qr-wrap">
-    <img class="qr-img" id="qr-img" src="" alt="QR Code">
-  </div>
-  <p class="cta">Scan to Upload Photos</p>
-  <p class="sub">Point your camera at the QR code<br>to submit photos from the night.</p>
-  <div class="url-pill" id="url-display"></div>
-  <button class="copy-btn" onclick="copyUrl()">Copy Link</button>
-</div>
-
-<p class="no-ev" id="no-event" style="display:none">No active event right now.</p>
+<p class="cta">Scan to Upload Photos</p>
+<p class="sub">Point your camera at the QR code<br>to submit photos from the night.</p>
+<div class="url-pill" id="url-display"></div>
+<button class="copy-btn" onclick="copyUrl()">Copy Link</button>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="firebase-config.js"></script>
 <script>
-let uploadUrl = '';
+const uploadUrl = window.location.href.replace(/qr\.html.*$/, '') + 'photos.html';
 
-async function init() {
+document.getElementById('url-display').textContent = uploadUrl;
+document.getElementById('qr-img').src =
+  'https://api.qrserver.com/v1/create-qr-code/?size=480x480&data=' + encodeURIComponent(uploadUrl);
+
+// Try to show the active event name — optional, page works without it
+async function loadEventName() {
   try {
     let snap = await db.collection('events').where('isActive','==',true).limit(1).get();
     if (snap.empty) {
       const today = new Date().toISOString().split('T')[0];
       snap = await db.collection('events').where('date','==',today).limit(1).get();
     }
-    if (snap.empty) {
-      document.getElementById('loading').style.display = 'none';
-      document.getElementById('no-event').style.display = 'block';
-      return;
+    if (!snap.empty) {
+      const ev = snap.docs[0].data();
+      document.getElementById('event-name').textContent =
+        (ev.name || '') + (ev.dateDisplay ? ' · ' + ev.dateDisplay : '');
     }
-
-    const ev = snap.docs[0].data();
-    const base = window.location.href.replace(/qr\.html.*$/, '');
-    uploadUrl = base + 'photos.html';
-
-    document.getElementById('event-name').textContent =
-      (ev.name || 'Tonight') + (ev.dateDisplay ? ' · ' + ev.dateDisplay : '');
-    document.getElementById('url-display').textContent = uploadUrl;
-    document.getElementById('qr-img').src =
-      'https://api.qrserver.com/v1/create-qr-code/?size=480x480&data=' + encodeURIComponent(uploadUrl);
-
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('main').style.display = 'flex';
   } catch(e) {
-    console.error(e);
-    document.getElementById('loading').style.display = 'none';
-    document.getElementById('no-event').textContent = 'Error loading event. Check console.';
-    document.getElementById('no-event').style.display = 'block';
+    // Event name is cosmetic — silently ignore any errors
   }
 }
 
@@ -115,7 +95,7 @@ function copyUrl() {
   });
 }
 
-init();
+loadEventName();
 </script>
 </body>
 </html>
