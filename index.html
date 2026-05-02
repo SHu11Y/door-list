@@ -495,7 +495,8 @@ const noteDraft    = {};
 // ── Auth ──────────────────────────────────────────
 auth.onAuthStateChanged(user => {
   if (user) {
-    const isAdmin = user.email.toLowerCase() === ADMIN_EMAIL.toLowerCase();
+    const adminSnap = await db.collection('admins').doc(user.uid).get();
+    const isAdmin = adminSnap.exists;
     document.getElementById('admin-link').style.display    = isAdmin ? '' : 'none';
     document.getElementById('admin-link-ev').style.display = isAdmin ? '' : 'none';
     show('loading');
@@ -514,10 +515,9 @@ async function doLogin(e) {
   const btn   = document.getElementById('l-btn');
   btn.disabled = true; btn.textContent = 'Signing in…'; err.textContent = '';
   try {
-    await auth.signInWithEmailAndPassword(email, pw);
-    if (email.toLowerCase() === ADMIN_EMAIL.toLowerCase()) {
-      window.location.href = 'admin.html';
-    }
+    const cred = await auth.signInWithEmailAndPassword(email, pw);
+    const adminSnap = await db.collection('admins').doc(cred.user.uid).get();
+    if (adminSnap.exists) window.location.href = 'admin.html';
   } catch {
     err.textContent = 'Invalid email or password.';
     btn.disabled = false; btn.textContent = 'Sign In';

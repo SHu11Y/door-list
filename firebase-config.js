@@ -1,9 +1,6 @@
 // ════════════════════════════════════════════════════
 //  FIREBASE CONFIG — shared across all pages
 
-// Email address of the admin account — gets redirected to admin.html on login
-const ADMIN_EMAIL = 'mattetully@gmail.com';
-
 const firebaseConfig = {
   apiKey:            "AIzaSyAvjrRwEXYrPNvJmH_JBh_BCBAV4IhFevE",
   authDomain:        "fhpartty.firebaseapp.com",
