@@ -58,8 +58,21 @@ body { background: var(--bg); color: var(--text); font-family: var(--font); min-
 }
 .photo-tile:hover .tile-name { opacity: 1; }
 
-/* Photo count */
-.count-bar { padding: .75rem 1.25rem .25rem; font-size: .7rem; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; }
+/* Photo count + save bar */
+.count-bar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: .75rem 1.25rem .25rem;
+}
+.count-txt { font-size: .7rem; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; }
+.save-btn {
+  background: var(--gold); color: #000; border: none; border-radius: 3px;
+  font-family: var(--font); font-weight: 700; font-size: .65rem;
+  letter-spacing: .08em; text-transform: uppercase; padding: .4rem .9rem;
+  cursor: pointer; touch-action: manipulation; transition: opacity .15s;
+  min-height: 32px;
+}
+.save-btn:active  { opacity: .8; }
+.save-btn:disabled { opacity: .4; pointer-events: none; }
 
 /* Empty state */
 .empty { padding: 3rem 2rem; text-align: center; color: var(--muted); font-size: .85rem; }
@@ -120,7 +133,10 @@ body { background: var(--bg); color: var(--text); font-family: var(--font); min-
 </div>
 
 <div id="gallery-view" style="display:none">
-  <div class="count-bar" id="count-bar"></div>
+  <div class="count-bar">
+    <span class="count-txt" id="count-bar"></span>
+    <button class="save-btn" id="save-btn" onclick="saveAll()">⬇ Save All</button>
+  </div>
   <div class="gallery-grid" id="grid"></div>
 </div>
 
@@ -181,6 +197,33 @@ async function init() {
   } catch(e) {
     console.error(e);
     show('status-invalid');
+  }
+}
+
+async function saveAll() {
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true; btn.textContent = 'Zipping…';
+  try {
+    const JSZip = (await import('https://cdn.jsdelivr.net/npm/jszip@3.10.1/+esm')).default;
+    const zip = new JSZip();
+    await Promise.all(photos.map(async (p, i) => {
+      const res  = await fetch(p.downloadUrl);
+      const blob = await res.blob();
+      const ext  = blob.type.split('/')[1] || 'jpg';
+      const name = (p.guestName || 'photo').replace(/\s+/g, '-').toLowerCase();
+      zip.file(`${String(i+1).padStart(3,'0')}-${name}.${ext}`, blob);
+    }));
+    const content = await zip.generateAsync({ type: 'blob' });
+    const label = document.getElementById('event-lbl').textContent || 'gallery';
+    const a = Object.assign(document.createElement('a'), {
+      href: URL.createObjectURL(content),
+      download: label.replace(/[^a-z0-9]+/gi, '-').toLowerCase() + '.zip'
+    });
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  } catch(e) {
+    alert('Download failed. Try again.'); console.error(e);
+  } finally {
+    btn.disabled = false; btn.textContent = '⬇ Save All';
   }
 }
 
