@@ -87,7 +87,10 @@ body { background: var(--bg); color: var(--text); font-family: var(--font); min-
 .lb-img { max-width: 100vw; max-height: 85vh; object-fit: contain; border-radius: 4px; }
 .lb-meta {
   margin-top: .75rem; font-size: .75rem; color: var(--muted);
-  letter-spacing: .05em;
+  letter-spacing: .05em; text-align: center;
+}
+.lb-hint {
+  font-size: .6rem; color: #444; margin-top: .3rem; text-align: center;
 }
 .lb-close {
   position: absolute; top: 1rem; right: 1rem;
@@ -157,6 +160,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font); min-
   <button class="lb-nav lb-prev" onclick="navLb(-1)">‹</button>
   <img class="lb-img" id="lb-img" src="" alt="">
   <div class="lb-meta" id="lb-meta"></div>
+  <div class="lb-hint">iOS: tap ⬇ Save then hold image → Add to Photos</div>
   <button class="lb-nav lb-next" onclick="navLb(1)">›</button>
 </div>
 
@@ -267,25 +271,8 @@ function closeLb() {
   document.getElementById('lightbox').classList.remove('open');
 }
 
-async function saveCurrent() {
-  const btn = document.getElementById('lb-save');
-  const p   = photos[lbIdx];
-  btn.disabled = true; btn.textContent = '…';
-  try {
-    const res  = await fetch(p.downloadUrl);
-    const blob = await res.blob();
-    const ext  = blob.type.split('/')[1] || 'jpg';
-    const name = (p.guestName || 'photo').replace(/\s+/g, '-').toLowerCase();
-    const a    = Object.assign(document.createElement('a'), {
-      href: URL.createObjectURL(blob),
-      download: `${name}.${ext}`
-    });
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  } catch(e) {
-    alert('Save failed. Try again.');
-  } finally {
-    btn.disabled = false; btn.textContent = '⬇ Save';
-  }
+function saveCurrent() {
+  window.open(photos[lbIdx].downloadUrl, '_blank');
 }
 
 function navLb(dir) {
