@@ -269,10 +269,12 @@ body { background: var(--bg); color: var(--text); font-family: var(--font); min-
 
   <!-- GALLERY TAB -->
   <div class="tab-panel" id="panel-gal">
-    <div class="gal-sel">
-      <select id="gal-ev-sel" onchange="loadGallery(this.value)">
+    <div style="display:flex;gap:.5rem;margin-bottom:1rem;align-items:center;">
+      <select id="gal-ev-sel" onchange="loadGallery(this.value)" style="flex:1;background:var(--surf2);border:1px solid var(--border);color:var(--text);font-family:var(--font);font-size:.875rem;padding:.65rem .8rem;outline:none;border-radius:2px;">
         <option value="">Select an event…</option>
       </select>
+      <button class="btn btn-ghost btn-sm" id="dl-all-btn" onclick="downloadAll()" style="display:none;flex-shrink:0;">⬇ Save All</button>
+    </div>
     </div>
     <div class="gal-link-box" id="gal-link-box">
       <div class="gal-link-label">Public Gallery Link</div>
@@ -307,6 +309,7 @@ let unsubMod    = null;
 let modEventId  = null;
 let galEventId  = null;
 let currentTab  = 'events';
+let galPhotos   = [];
 
 // ── Auth ──────────────────────────────────────────
 auth.onAuthStateChanged(user => {
@@ -563,6 +566,44 @@ async function rejectPhoto(eventId, photoId, storagePath) {
   await db.collection('events').doc(eventId).collection('photos').doc(photoId).delete();
 }
 
+async function deleteGalleryPhoto(eventId, photoId, storagePath) {
+  if (!confirm('Delete this photo permanently?')) return;
+  if (storagePath) try { await storage.ref(storagePath).delete(); } catch {}
+  await db.collection('events').doc(eventId).collection('photos').doc(photoId).delete();
+  document.getElementById(`gpc-${photoId}`)?.remove();
+  galPhotos = galPhotos.filter(p => p.id !== photoId);
+  if (!galPhotos.length) {
+    document.getElementById('gal-grid').innerHTML = `<div class="empty-state" style="grid-column:1/-1">No approved photos yet.</div>`;
+    document.getElementById('dl-all-btn').style.display = 'none';
+  }
+}
+
+async function downloadAll() {
+  if (!galPhotos.length) return;
+  const btn = document.getElementById('dl-all-btn');
+  btn.disabled = true; btn.textContent = 'Zipping…';
+  try {
+    const JSZip = (await import('https://cdn.jsdelivr.net/npm/jszip@3.10.1/+esm')).default;
+    const zip = new JSZip();
+    await Promise.all(galPhotos.map(async (p, i) => {
+      const res  = await fetch(p.downloadUrl);
+      const blob = await res.blob();
+      const ext  = blob.type.split('/')[1] || 'jpg';
+      const name = (p.guestName || 'photo').replace(/\s+/g, '-').toLowerCase();
+      zip.file(`${String(i+1).padStart(3,'0')}-${name}.${ext}`, blob);
+    }));
+    const content = await zip.generateAsync({ type: 'blob' });
+    const ev = allEvents.find(e => e.id === galEventId);
+    const filename = `gallery-${(ev?.name||'event').replace(/\s+/g,'-').toLowerCase()}.zip`;
+    const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(content), download: filename });
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  } catch(e) {
+    alert('Download failed. Try again.'); console.error(e);
+  } finally {
+    btn.disabled = false; btn.textContent = '⬇ Save All';
+  }
+}
+
 // ── Gallery ───────────────────────────────────────
 async function loadGallery(eventId) {
   galEventId = eventId;
@@ -592,13 +633,19 @@ async function loadGallery(eventId) {
 
   if (!photos.length) {
     grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1">No approved photos yet.</div>`;
+    document.getElementById('dl-all-btn').style.display = 'none';
     return;
   }
+  galPhotos = photos;
+  document.getElementById('dl-all-btn').style.display = '';
   grid.innerHTML = photos.map(p => `
-<div class="photo-card">
+<div class="photo-card" id="gpc-${p.id}">
   <img class="photo-thumb" src="${esc(p.downloadUrl)}" loading="lazy" onclick="openLightbox('${esc(p.downloadUrl)}')">
   <div class="photo-info">
     <div class="photo-guest">${esc(p.guestName||'Anonymous')}</div>
+    <div class="photo-acts" style="margin-top:.35rem;">
+      <button class="btn btn-red btn-sm" style="width:100%" onclick="deleteGalleryPhoto('${esc(galEventId)}','${p.id}','${esc(p.storagePath||'')}')">Delete</button>
+    </div>
   </div>
 </div>`).join('');
 }
