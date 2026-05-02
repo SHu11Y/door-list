@@ -97,6 +97,16 @@ body { background: var(--bg); color: var(--text); font-family: var(--font); min-
   touch-action: manipulation;
 }
 .lb-close:active { background: rgba(255,255,255,.2); }
+.lb-save {
+  position: absolute; top: 1rem; left: 1rem;
+  background: var(--gold); border: none; color: #000;
+  font-family: var(--font); font-size: .65rem; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase;
+  padding: .4rem .85rem; border-radius: 3px; cursor: pointer;
+  touch-action: manipulation; transition: opacity .15s; min-height: 36px;
+}
+.lb-save:active  { opacity: .8; }
+.lb-save:disabled { opacity: .4; pointer-events: none; }
 .lb-nav {
   position: absolute; top: 50%; transform: translateY(-50%);
   background: rgba(255,255,255,.08); border: none; color: var(--text);
@@ -142,6 +152,7 @@ body { background: var(--bg); color: var(--text); font-family: var(--font); min-
 
 <!-- Lightbox -->
 <div class="lightbox" id="lightbox">
+  <button class="lb-save" id="lb-save" onclick="saveCurrent()">⬇ Save</button>
   <button class="lb-close" onclick="closeLb()">✕</button>
   <button class="lb-nav lb-prev" onclick="navLb(-1)">‹</button>
   <img class="lb-img" id="lb-img" src="" alt="">
@@ -254,6 +265,27 @@ function openLb(idx) {
 
 function closeLb() {
   document.getElementById('lightbox').classList.remove('open');
+}
+
+async function saveCurrent() {
+  const btn = document.getElementById('lb-save');
+  const p   = photos[lbIdx];
+  btn.disabled = true; btn.textContent = '…';
+  try {
+    const res  = await fetch(p.downloadUrl);
+    const blob = await res.blob();
+    const ext  = blob.type.split('/')[1] || 'jpg';
+    const name = (p.guestName || 'photo').replace(/\s+/g, '-').toLowerCase();
+    const a    = Object.assign(document.createElement('a'), {
+      href: URL.createObjectURL(blob),
+      download: `${name}.${ext}`
+    });
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  } catch(e) {
+    alert('Save failed. Try again.');
+  } finally {
+    btn.disabled = false; btn.textContent = '⬇ Save';
+  }
 }
 
 function navLb(dir) {
