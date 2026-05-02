@@ -26,7 +26,7 @@ body {
   display: inline-flex; align-items: center; justify-content: center;
   margin-bottom: 2rem; box-shadow: 0 0 60px rgba(212,160,23,.15);
 }
-#qrcode canvas, #qrcode img { display: block; }
+.qr-img { width: 240px; height: 240px; display: block; }
 .cta { font-size: 1.4rem; font-weight: 900; color: var(--text); margin-bottom: .4rem; letter-spacing: -.01em; }
 .sub { font-size: .85rem; color: var(--muted); margin-bottom: 2rem; line-height: 1.5; }
 .url-pill {
@@ -57,7 +57,7 @@ body {
   <div class="logo">The FreakHouse</div>
   <div class="event-name" id="event-name">Loading…</div>
   <div class="qr-wrap">
-    <div id="qrcode"></div>
+    <img class="qr-img" id="qr-img" src="" alt="QR Code">
   </div>
   <p class="cta">Scan to Upload Photos</p>
   <p class="sub">Point your camera at the QR code<br>to submit photos from the night.</p>
@@ -70,7 +70,6 @@ body {
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="firebase-config.js"></script>
 <script>
 let uploadUrl = '';
@@ -95,21 +94,15 @@ async function init() {
     document.getElementById('event-name').textContent =
       (ev.name || 'Tonight') + (ev.dateDisplay ? ' · ' + ev.dateDisplay : '');
     document.getElementById('url-display').textContent = uploadUrl;
-
-    new QRCode(document.getElementById('qrcode'), {
-      text: uploadUrl,
-      width: 240,
-      height: 240,
-      colorDark: '#000000',
-      colorLight: '#ffffff',
-      correctLevel: QRCode.CorrectLevel.M
-    });
+    document.getElementById('qr-img').src =
+      'https://api.qrserver.com/v1/create-qr-code/?size=480x480&data=' + encodeURIComponent(uploadUrl);
 
     document.getElementById('loading').style.display = 'none';
     document.getElementById('main').style.display = 'flex';
   } catch(e) {
     console.error(e);
     document.getElementById('loading').style.display = 'none';
+    document.getElementById('no-event').textContent = 'Error loading event. Check console.';
     document.getElementById('no-event').style.display = 'block';
   }
 }
