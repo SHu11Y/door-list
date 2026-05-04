@@ -517,7 +517,8 @@ async function doLogin(e) {
   let cred;
   try {
     cred = await auth.signInWithEmailAndPassword(email, pw);
-  } catch {
+  } catch (ex) {
+    console.error('Login error:', ex.code, ex.message);
     err.textContent = 'Invalid email or password.';
     btn.disabled = false; btn.textContent = 'Sign In';
     document.getElementById('l-pw').value = '';
