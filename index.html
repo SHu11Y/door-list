@@ -514,10 +514,9 @@ async function doLogin(e) {
   const err   = document.getElementById('l-err');
   const btn   = document.getElementById('l-btn');
   btn.disabled = true; btn.textContent = 'Signing in…'; err.textContent = '';
+  let cred;
   try {
-    const cred = await auth.signInWithEmailAndPassword(email, pw);
-    const adminSnap = await db.collection('admins').doc(cred.user.uid).get();
-    if (adminSnap.exists) window.location.href = 'admin.html';
+    cred = await auth.signInWithEmailAndPassword(email, pw);
   } catch {
     err.textContent = 'Invalid email or password.';
     btn.disabled = false; btn.textContent = 'Sign In';
@@ -525,7 +524,10 @@ async function doLogin(e) {
     const inp = document.getElementById('l-pw');
     inp.classList.add('shake');
     setTimeout(() => inp.classList.remove('shake'), 400);
+    return;
   }
+  const adminSnap = await db.collection('admins').doc(cred.user.uid).get();
+  if (adminSnap.exists) window.location.href = 'admin.html';
 }
 
 async function doSignOut() {
