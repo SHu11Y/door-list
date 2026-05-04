@@ -493,7 +493,7 @@ let unsubG         = null;   // current event guests listener
 const noteDraft    = {};
 
 // ── Auth ──────────────────────────────────────────
-auth.onAuthStateChanged(user => {
+auth.onAuthStateChanged(async user => {
   if (user) {
     const adminSnap = await db.collection('admins').doc(user.uid).get();
     const isAdmin = adminSnap.exists;
